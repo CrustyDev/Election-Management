@@ -138,49 +138,49 @@ class Tideman {
         }
     }
 
-    void lock_arrpairs() {
-        for (int i = 0; i < arrpair_count; i++) {
-            int ii = arrpairs[i].getWinner();
-            int jj = arrpairs[i].getLoser();
-            locked[ii][jj] = true;
+        void lock_arrpairs() {
+            for (int i = 0; i < arrpair_count; i++) {
+                int ii = arrpairs[i].getWinner();
+                int jj = arrpairs[i].getLoser();
+                locked[ii][jj] = true;
 
-            if (lock_check(ii, jj)) {
-                locked[ii][jj] = false;
+                if (lock_check(ii, jj)) {
+                    locked[ii][jj] = false;
+                }
             }
         }
-    }
 
-    void print_winner() {
-        for (int j = 0; j < candidate_count; j++) {
-            int counter1 = 0;
+        void print_winner() {
+            for (int j = 0; j < candidate_count; j++) {
+                int counter1 = 0;
 
-            for (int i = 0; i < candidate_count; i++) {
-                if (!locked[i][j]) {
-                    counter1++;
-                    if (counter1 == candidate_count) {
-                        cout << candidates[j].getName() << endl;
+                for (int i = 0; i < candidate_count; i++) {
+                    if (!locked[i][j]) {
+                        counter1++;
+                        if (counter1 == candidate_count) {
+                            cout << candidates[j].getName() << endl;
+                        }
                     }
                 }
             }
         }
-    }
 
-    bool lock_check(int ii, int jj) {
-        if (candidate_count == 1)
-            return false;
+        bool lock_check(int ii, int jj) {
+            if (candidate_count == 1)
+                return false;
 
-        if (ii == jj)
-            return true;
+            if (ii == jj)
+                return true;
 
-        for (int i = 0; i < candidate_count; i++) {
-            if (locked[jj][i]) {
-                if (lock_check(ii, i))
-                    return true;
+            for (int i = 0; i < candidate_count; i++) {
+                if (locked[jj][i]) {
+                    if (lock_check(ii, i))
+                        return true;
+                }
             }
-        }
 
-        return false;
-    };
+            return false;
+        };
 };
 
 int main(int argc, char* argv[]) {
