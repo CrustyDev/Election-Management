@@ -22,10 +22,10 @@ int candidate_count;
 
 bool vote(int rank, string name, int ranks[]);
 void record_preferences(int ranks[]);
-void add_arrpairs();
-void sort_arrpairs();
-void lock_arrpairs();
-void print_winner();
+void add_arrpairs(void);
+void sort_arrpairs(void);
+void lock_arrpairs(void);
+void print_winner(void);
 bool lock_check(int ii, int jj);
 
 int main(int argc, char* argv[])
@@ -113,7 +113,7 @@ void record_preferences(int ranks[]){
     }
 }
 
-void add_arrpairs()
+void add_arrpairs(void)
 {
     for (int i = 0; i < candidate_count; i++)
     {
@@ -135,7 +135,7 @@ void add_arrpairs()
     }
 }
 
-void sort_arrpairs()
+void sort_arrpairs(void)
 {
     for (int i = 0; i < arrpair_count; i++)
     {
@@ -157,7 +157,7 @@ void sort_arrpairs()
     }
 }
 
-void lock_arrpairs()
+void lock_arrpairs(void)
 {
     for (int i = 0; i < arrpair_count; i++)
     {
@@ -172,7 +172,7 @@ void lock_arrpairs()
     }
 }
 
-void print_winner()
+void print_winner(void)
 {
     for (int j = 0; j < candidate_count; j++)
     {
