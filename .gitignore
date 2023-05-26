@@ -1,5 +1,5 @@
 build/
-test.c
-a.out
-logic
-logicoops
+build_win/
+out/
+.vscode/
+.vs/
