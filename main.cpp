@@ -1,9 +1,8 @@
-
-#include<iostream>
-#include<fstream>
-#include<string>
+#include <iostream>
+#include <fstream>
+#include <string>
 #include <cstring>
-#include<algorithm>
+#include <algorithm>
 
 using namespace std;
 int stateCount = 0;
@@ -194,11 +193,11 @@ void setResultId()
 
 void funFrontPage()
 {
-	#if defined _WIN32
-		system("cls");
-	#else 
-		system("clear");
-	#endif
+#if defined _WIN32
+	system("cls");
+#else
+	system("clear");
+#endif
 }
 
 void funHeading(string Heading)
@@ -279,7 +278,7 @@ int choiceAdmin(int a)
 	}
 	else if (a == 6)
 	{
-		//funHeading("Options : ");
+		// funHeading("Options : ");
 		cout << "\n\n   Options : - ";
 		cout << "\n\n   0.LogOut" << endl;
 		cout << "   1.View Members List" << endl;
@@ -287,7 +286,7 @@ int choiceAdmin(int a)
 	}
 	else if (a == 7)
 	{
-		//funHeading("Options : ");
+		// funHeading("Options : ");
 		cout << "\n\n   Options : - ";
 		cout << "\n\n   0.LogOut" << endl;
 		cout << "   1.View Other Members List" << endl;
@@ -295,7 +294,7 @@ int choiceAdmin(int a)
 	}
 	else if (a == 8)
 	{
-		//funHeading("Options : ");
+		// funHeading("Options : ");
 		cout << "\n\n   Options : - ";
 		cout << "\n\n   0.LogOut" << endl;
 		cout << "   1.Do Vote" << endl;
@@ -329,7 +328,7 @@ public:
 		strcpy(stateName, "NoName");
 	}
 
-	State(const char* sName)
+	State(const char *sName)
 	{
 		stateCount++;
 		stateId = stateCount;
@@ -360,9 +359,8 @@ public:
 	void setstateId(int id) { stateId = id; }
 
 	string getstateName() { return stateName; }
-	char* getstateName2() { return stateName; }
-	void setstateName(const char* sName) { strcpy(stateName, sName); }
-
+	char *getstateName2() { return stateName; }
+	void setstateName(const char *sName) { strcpy(stateName, sName); }
 
 	int storeState();
 	int getStates(int x);
@@ -373,12 +371,15 @@ int State::getStates(int x)
 	int i = 0;
 	ifstream finStateRecord;
 	finStateRecord.open("States.txt", ios::in | ios::binary);
-	if (!finStateRecord) { cout << "\n   File not Found"; }
+	if (!finStateRecord)
+	{
+		cout << "\n   File not Found";
+	}
 	else
 	{
 		while (!finStateRecord.eof() && i != x + 1)
 		{
-			finStateRecord.read((char*)this, sizeof(*this));
+			finStateRecord.read(reinterpret_cast<char *>(this), sizeof(*this));
 			i++;
 		}
 	}
@@ -388,18 +389,24 @@ int State::storeState()
 {
 	ofstream foutState;
 	foutState.open("States.txt", ios::app | ios::binary);
-	foutState.write((char*)this, sizeof(*this));
+	foutState.write((char *)this, sizeof(*this));
 	foutState.close();
 }
 
-void funStateInput(State* bs1, int x)
+void funStateInput(State *bs1, int x)
 {
 	int y = x + stateCount;
 	State obj;
 	for (int i = stateCount, k = 0; i < y; i++, k++)
 	{
-		if (x > 1) { cout << "\n   Enter State " << k + 1 << "\n"; }
-		else { cout << "\n"; }
+		if (x > 1)
+		{
+			cout << "\n   Enter State " << k + 1 << "\n";
+		}
+		else
+		{
+			cout << "\n";
+		}
 		cout << "   ";
 		obj.getStateInfo();
 		string objName = obj.getstateName();
@@ -408,8 +415,14 @@ void funStateInput(State* bs1, int x)
 		{
 			string cmpName = bs1[j - 1].getstateName();
 			int k = cmpName.compare(objName);
-			if (k < 0) { bs1[j] = bs1[j - 1]; }
-			else { break; }
+			if (k < 0)
+			{
+				bs1[j] = bs1[j - 1];
+			}
+			else
+			{
+				break;
+			}
 		}
 		bs1[j] = obj;
 	}
@@ -422,22 +435,30 @@ void insertNewState()
 	cout << "\n   Enter the No. of State's you want to Insert: ";
 	cin >> x;
 	cin.ignore();
-	if (x == 0) { return; }
+	if (x == 0)
+	{
+		return;
+	}
 	State bs1[stateCount + x];
 	funHeading("Inserting State's Record: ");
-	cout << endl << "   S.No.  StateName\n\n";
+	cout << endl
+		 << "   S.No.  StateName\n\n";
 	for (int i = 0; i < stateCount; i++)
 	{
 		bs1[i].getStates(i);
 		cout << "   " << i + 1 << ".";
 		int j = countDigits(i + 1);
-		for (int k = j; k < 8; k++) cout << " ";
+		for (int k = j; k < 8; k++)
+			cout << " ";
 		bs1[i].showStateInfo();
 	}
 	funStateInput(bs1, x);
 	SetStateCount();
 	remove("States.txt");
-	for (int i = 0; i < stateCount; i++) { bs1[i].storeState(); }
+	for (int i = 0; i < stateCount; i++)
+	{
+		bs1[i].storeState();
+	}
 	cout << "\n\n   Record Inserted\n\n   Press any Key To Update The Record";
 }
 
@@ -461,15 +482,20 @@ void deleteState()
 		return;
 	}
 	State bs1[stateCount];
-	for (int i = 0; i < stateCount; i++) { bs1[i].getStates(i); }
-redo:;
+	for (int i = 0; i < stateCount; i++)
+	{
+		bs1[i].getStates(i);
+	}
+redo:
 	funHeading("Deleting A State Record : ");
-	cout << endl << "   S.No.  StateName\n\n";
+	cout << endl
+		 << "   S.No.  StateName\n\n";
 	for (int i = 0; i < stateCount; i++)
 	{
 		cout << "   " << i + 1 << ".";
 		int j = countDigits(i + 1);
-		for (int k = j; k < 8; k++) cout << " ";
+		for (int k = j; k < 8; k++)
+			cout << " ";
 		bs1[i].showStateInfo();
 	}
 	cout << "\n\n";
@@ -487,11 +513,14 @@ redo:;
 		cin.ignore();
 		char cnfm;
 		cout << "\n   Are you Sure to Delete Record " << bs1[sr - 1].getstateName() << " (y/n) : ";
-		//cnfm = cout<<cnfm;
+		// cnfm = cout<<cnfm;
 		cin >> cnfm;
 		if (cnfm == 'y' || cnfm == 'Y')
 		{
-			for (int i = sr - 1; i < stateCount; i++) { bs1[i] = bs1[i + 1]; }
+			for (int i = sr - 1; i < stateCount; i++)
+			{
+				bs1[i] = bs1[i + 1];
+			}
 			stateCount--;
 			cout << "\n\n   Record Deleted\n\n   Press any Key to Update Record";
 		}
@@ -523,10 +552,13 @@ redo:;
 		}
 		char cnfm;
 		cout << "\n   Are you Sure to Delete Record " << bs1[sr - 1].getstateName() << " (y/n) : ";
-		cin >> cnfm; //cnfm = cout<<cnfm;
+		cin >> cnfm; // cnfm = cout<<cnfm;
 		if (cnfm == 'y' || cnfm == 'Y')
 		{
-			for (int i = sr - 1; i < stateCount; i++) { bs1[i] = bs1[i + 1]; }
+			for (int i = sr - 1; i < stateCount; i++)
+			{
+				bs1[i] = bs1[i + 1];
+			}
 			stateCount--;
 			cout << "\n\n   Record Deleted\n\n   Press any Key to Update Record";
 		}
@@ -536,7 +568,10 @@ redo:;
 	{
 		SetStateCount();
 		remove("States.txt");
-		for (int i = 0; i < stateCount; i++) { bs1[i].storeState(); }
+		for (int i = 0; i < stateCount; i++)
+		{
+			bs1[i].storeState();
+		}
 		return;
 	}
 	cout << "\n   Enter the Correct Choice!";
@@ -563,15 +598,20 @@ void updateState()
 		return;
 	}
 	State bs1[stateCount];
-	for (int i = 0; i < stateCount; i++) { bs1[i].getStates(i); }
+	for (int i = 0; i < stateCount; i++)
+	{
+		bs1[i].getStates(i);
+	}
 redo:;
 	funHeading("Updating A State Record : ");
-	cout << endl << "   S.No.  StateName\n\n";
+	cout << endl
+		 << "   S.No.  StateName\n\n";
 	for (int i = 0; i < stateCount; i++)
 	{
 		cout << "   " << i + 1 << ".";
 		int j = countDigits(i + 1);
-		for (int k = j; k < 8; k++) cout << " ";
+		for (int k = j; k < 8; k++)
+			cout << " ";
 		bs1[i].showStateInfo();
 	}
 	cout << "\n\n";
@@ -593,11 +633,14 @@ redo:;
 		char cnfm;
 		cout << "\n   Are you Sure to Update the Record to " << newName << " (y/n) : ";
 		cin >> cnfm;
-		//cnfm = 
-		//cout<<cnfm;
+		// cnfm =
+		// cout<<cnfm;
 		if (cnfm == 'y' || cnfm == 'Y')
 		{
-			for (int i = sr - 1; i < stateCount; i++) { bs1[i] = bs1[i + 1]; }
+			for (int i = sr - 1; i < stateCount; i++)
+			{
+				bs1[i] = bs1[i + 1];
+			}
 			stateCount--;
 			State obj(newName);
 			int j;
@@ -605,8 +648,14 @@ redo:;
 			{
 				string cmpName = bs1[j - 1].getstateName();
 				int k = cmpName.compare(newName);
-				if (k < 0) { bs1[j] = bs1[j - 1]; }
-				else { break; }
+				if (k < 0)
+				{
+					bs1[j] = bs1[j - 1];
+				}
+				else
+				{
+					break;
+				}
 			}
 			bs1[j] = obj;
 			cout << "\n\n   Record Updated\n\n   Press any Key to Update Record";
@@ -641,11 +690,14 @@ redo:;
 		cin.getline(newName, 24);
 		char cnfm;
 		cout << "\n   Are you Sure to Update the Record to " << newName << " (y/n) : ";
-		//cnfm = cout<<cnfm;
+		// cnfm = cout<<cnfm;
 		cin >> cnfm;
 		if (cnfm == 'y' || cnfm == 'Y')
 		{
-			for (int i = sr - 1; i < stateCount; i++) { bs1[i] = bs1[i + 1]; }
+			for (int i = sr - 1; i < stateCount; i++)
+			{
+				bs1[i] = bs1[i + 1];
+			}
 			stateCount--;
 			State obj(newName);
 			int j;
@@ -653,8 +705,14 @@ redo:;
 			{
 				string cmpName = bs1[j - 1].getstateName();
 				int k = cmpName.compare(newName);
-				if (k < 0) { bs1[j] = bs1[j - 1]; }
-				else { break; }
+				if (k < 0)
+				{
+					bs1[j] = bs1[j - 1];
+				}
+				else
+				{
+					break;
+				}
 			}
 			bs1[j] = obj;
 			cout << "\n\n   Record Updated\n\n   Press any Key to Update Record";
@@ -665,7 +723,10 @@ redo:;
 	{
 		SetStateCount();
 		remove("States.txt");
-		for (int i = 0; i < stateCount; i++) { bs1[i].storeState(); }
+		for (int i = 0; i < stateCount; i++)
+		{
+			bs1[i].storeState();
+		}
 		return;
 	}
 	cout << "\n   Enter the Correct Choice!";
@@ -681,19 +742,23 @@ void viewStateRecord()
 		return;
 	}
 	State bs1[stateCount];
-	cout << endl << "   S.No.  StateName    Seats\n\n";
-	char* sName;
+	cout << endl
+		 << "   S.No.  StateName    Seats\n\n";
+	char *sName;
 	for (int i = 0; i < stateCount; i++)
 	{
 		bs1[i].getStates(i);
 		cout << "   " << i + 1 << ".";
 		int j = countDigits(i + 1);
-		for (int k = j; k < 8; k++) cout << " ";
+		for (int k = j; k < 8; k++)
+			cout << " ";
 		sName = bs1[i].getstateName2();
 		cout << sName;
-		cout << std::string(strlen(sName), ' ');
+		cout << std::string((20 - strlen(sName)), ' ');
 		cout << bs1[i].getSeats() << endl;
 	}
+	cin.ignore();
+	cin.get();
 }
 
 class City : public State
@@ -713,7 +778,7 @@ public:
 		cityId = 0;
 	}
 
-	int getCityInfo(int sId, char* sName)
+	int getCityInfo(int sId, char *sName)
 	{
 		setstateId(sId);
 		setstateName(sName);
@@ -736,15 +801,15 @@ public:
 		cout << cityName << endl;
 	}
 
-	//int getSeats(){return seats;}
-	//void setSeats(int x){seats = seats + x;}
+	// int getSeats(){return seats;}
+	// void setSeats(int x){seats = seats + x;}
 	int getcityId() { return cityId; }
 	string getcityName() { return cityName; }
-	char* getcityName2() { return cityName; }
+	char *getcityName2() { return cityName; }
 	int getLeadCandidateId() { return LeadcandidateId; }
 
 	void setCityId(int n) { cityId = n; }
-	void setcityName(char* name) { strcpy(cityName, name); }
+	void setcityName(char *name) { strcpy(cityName, name); }
 	int storeCity();
 	int getCity(int x);
 	void setLeadCandidateId(int n) { LeadcandidateId = n; }
@@ -755,12 +820,15 @@ int City::getCity(int x)
 	int i = 0;
 	ifstream finCityRecord;
 	finCityRecord.open("Cities.txt", ios::in | ios::binary);
-	if (!finCityRecord) { cout << "\n   File not Found"; }
+	if (!finCityRecord)
+	{
+		cout << "\n   File not Found";
+	}
 	else
 	{
 		while (!finCityRecord.eof() && i != x + 1)
 		{
-			finCityRecord.read((char*)this, sizeof(*this));
+			finCityRecord.read((char *)this, sizeof(*this));
 			i++;
 		}
 	}
@@ -770,18 +838,24 @@ int City::storeCity()
 {
 	ofstream foutCity;
 	foutCity.open("Cities.txt", ios::app | ios::binary);
-	foutCity.write((char*)this, sizeof(*this));
+	foutCity.write((char *)this, sizeof(*this));
 	foutCity.close();
 }
 
-int funCityInput(int stateId, char* stateName, City* b, int x)
+int funCityInput(int stateId, char *stateName, City *b, int x)
 {
 	int y = x + cityCount, stateSeats = 0;
 	City obj;
 	for (int i = cityCount, k = 0; i < y; i++, k++)
 	{
-		if (x > 1) { cout << "\n   Enter City " << k + 1 << "\n"; }
-		else { cout << "\n"; }
+		if (x > 1)
+		{
+			cout << "\n   Enter City " << k + 1 << "\n";
+		}
+		else
+		{
+			cout << "\n";
+		}
 		cout << "   ";
 		stateSeats = stateSeats + obj.getCityInfo(stateId, stateName);
 
@@ -791,16 +865,28 @@ int funCityInput(int stateId, char* stateName, City* b, int x)
 		{
 			string cmpState = b[j - 1].getstateName();
 			int k = cmpState.compare(objState);
-			if (k < 0) { b[j] = b[j - 1]; }
+			if (k < 0)
+			{
+				b[j] = b[j - 1];
+			}
 			else if (!k)
 			{
 				string objCity = obj.getcityName();
 				string cmpCity = b[j - 1].getcityName();
 				int k = cmpCity.compare(objCity);
-				if (k < 0) { b[j] = b[j - 1]; }
-				else { goto in; }
+				if (k < 0)
+				{
+					b[j] = b[j - 1];
+				}
+				else
+				{
+					goto in;
+				}
 			}
-			else { break; }
+			else
+			{
+				break;
+			}
 		}
 	in:;
 		b[j] = obj;
@@ -808,6 +894,7 @@ int funCityInput(int stateId, char* stateName, City* b, int x)
 	return stateSeats;
 }
 
+// TODO: Refactor This
 void insertNewCity()
 {
 	int x;
@@ -815,13 +902,15 @@ void insertNewCity()
 	GetStateCount();
 	State bs1[stateCount];
 	funHeading("Inserting City's Record: ");
-	cout << endl << "   S.No.  StateName\n\n";
+	cout << endl
+		 << "   S.No.  StateName\n\n";
 	for (int i = 0; i < stateCount; i++)
 	{
 		bs1[i].getStates(i);
 		cout << "   " << i + 1 << ".";
 		int j = countDigits(i + 1);
-		for (int k = j; k < 8; k++) cout << " ";
+		for (int k = j; k < 8; k++)
+			cout << " ";
 		bs1[i].showStateInfo();
 	}
 	int st;
@@ -831,118 +920,54 @@ void insertNewCity()
 	cout << "\n   Enter the No. of Cities you want to Insert: ";
 	cin >> x;
 	cin.ignore();
-	if (x == 0) { return; }
+	if (x == 0)
+	{
+		return;
+	}
 
 	City c[cityCount + x];
-	//funHeading("Inserting State's Record: ");
-	cout << endl << "\n\n   S.No.  CityName    Seats\n\n";
-	char* cName;
+	// funHeading("Inserting State's Record: ");
+	cout << endl
+		 << "\n\n   S.No.  CityName    Seats\n\n";
+	char *cName;
 	for (int i = 0; i < cityCount; i++)
 	{
 		c[i].getCity(i);
 		cout << "   " << i + 1 << ".";
 		int j = countDigits(i + 1);
-		for (int k = j; k < 8; k++) cout << " ";
+		for (int k = j; k < 8; k++)
+			cout << " ";
 		cName = c[i].getcityName2();
 		cout << cName;
 		j = strlen(cName);
-		for (int k = j; k < 14; k++) cout << " ";
+		for (int k = j; k < 14; k++)
+			cout << " ";
 		cout << c[i].getSeats() << endl;
-		//cout<<"   "<<c[i].getstateId()<<"  "<<c[i].getstateName()<<endl;
+		// cout<<"   "<<c[i].getstateId()<<"  "<<c[i].getstateName()<<endl;
 	}
 	int seatsCount = funCityInput(bs1[st - 1].getstateId(), bs1[st - 1].getstateName2(), c, x);
 	seatsCount = seatsCount + bs1[st - 1].getSeats();
 	bs1[st - 1].setSeats(seatsCount);
 	SetCityCount();
 	remove("States.txt");
-	for (int i = 0; i < stateCount; i++) { bs1[i].storeState(); }
+	for (int i = 0; i < stateCount; i++)
+	{
+		bs1[i].storeState();
+	}
 	remove("Cities.txt");
-	for (int i = 0; i < cityCount; i++) { c[i].storeCity(); }
+	for (int i = 0; i < cityCount; i++)
+	{
+		c[i].storeCity();
+	}
 	cout << "\n\n   Record Inserted\n\n   Press any Key To Update The Record";
 }
 
-/*int inputDeleteChoices(){
-   int x;
-   cout<<"   1.Delete Via SerialNumber(*Convenient)"<<endl;
-   cout<<"   2.Delete Via StateName"<<endl;
-   cout<<"   3.Go Back"<<endl;
-   cout<<"\n   Enter your Choice : ";
-   cin>>x;
-   return x;
-}*/
 void deleteCity()
 {
-	/*getStateCount();
-	if(stateCount==0){cout<<"\n   No Record Exists";return;}
-	State bs1[stateCount];
-	for(int i=0;i<stateCount;i++){bs1[i].getStates(i);}
-	redo:;*/
 	funHeading("Deleting A State Record : ");
 	cout << "   Available Soon";
-
-	/*cout<<endl<<"   S.No.  StateName\n\n";
-	for(int i=0;i<stateCount;i++){
-	   cout<<"   "<<i+1<<".";
-	   int j = countDigits(i+1);
-	   for(int k = j;k<8;k++) cout<<" ";
-	   bs1[i].showStateInfo();
-	}
-	cout<<"\n\n";
-	int ch = inputDeleteChoices();
-	if(ch == 1){
-	   int sr;
-	   cout<<"\n   Enter the S.No. : ";cin>>sr;
-	   if(sr<=0||sr>stateCount){cout<<"\n   Invalid No!";goto redo;}
-	   cin.ignore();
-	   char cnfm;
-	   cout<<"\n   Are you Sure to Delete Record "<<bs1[sr-1].getstateName()<<" (y/n) : ";
-	   //cnfm = cout<<cnfm;
-	   cin>>cnfm;
-	   if(cnfm == 'y'||cnfm == 'Y'){
-	      for(int i=sr-1;i<stateCount;i++){bs1[i]=bs1[i+1];}
-	      stateCount--;
-	      cout<<"\n\n   Record Deleted\n\n   Press any Key to Update Record";
-	   }
-	   goto redo;
-	}
-	else if(ch==2){
-	   int sr;char sName[25];
-	   cout<<"\n   Enter the StateName : ";
-	   cin.ignore();cin.getline(sName,19);
-	   bool f=0;
-	   for(int i=0;i<stateCount;i++){
-	      string stName = bs1[i].getstateName();
-	      int match = stringMatch(stName,sName);
-	      if(match==1){f=1;sr=i+1;break;}
-	   }
-	   if(f!=1){cout<<"\n\n   Record Already Not Exists\n\n   Press any Key";goto redo;}
-	   char cnfm;
-	   cout<<"\n   Are you Sure to Delete Record "<<bs1[sr-1].getstateName()<<" (y/n) : ";cin>>cnfm;//cnfm = cout<<cnfm;
-	   if(cnfm == 'y'||cnfm == 'Y'){
-	      for(int i=sr-1;i<stateCount;i++){bs1[i]=bs1[i+1];}
-	      stateCount--;
-	      cout<<"\n\n   Record Deleted\n\n   Press any Key to Update Record";
-	   }
-	   goto redo;
-	}
-	else if (ch==3){
-	   setStateCount();
-	   remove("States.txt");
-	   for(int i=0;i<stateCount;i++){bs1[i].storeState();}
-	   return;
-	}
-	else{cout<<"\n   Enter the Correct Choice!";goto redo;}*/
 }
 
-/*int inputUpdateChoices(){
-   int x;
-   cout<<"   1.Update Via SerialNumber(*Convenient)"<<endl;
-   cout<<"   2.Update Via StationName"<<endl;
-   cout<<"   3.Go Back"<<endl;
-   cout<<"\n   Enter your Choice : ";
-   cin>>x;
-   return x;
-}*/
 void updateCity()
 {
 	funHeading("Updating A State Record : ");
@@ -958,42 +983,30 @@ void viewCityRecord()
 		return;
 	}
 	City bs1[cityCount];
-	cout << endl << "   S.No.  StateName    CityName    Seats\n\n";
-	char* sName;
+	cout << endl
+		 << "   S.No.  StateName    CityName    Seats\n\n";
+	char *sName;
 	for (int i = 0; i < cityCount; i++)
 	{
 		bs1[i].getCity(i);
 		cout << "   " << i + 1 << ".";
 		int j = countDigits(i + 1);
-		for (int k = j; k < 8; k++) cout << " ";
+		for (int k = j; k < 8; k++)
+			cout << " ";
 		sName = bs1[i].getstateName2();
 		cout << sName;
 		j = strlen(sName);
-		for (int k = j; k < 12; k++) cout << " ";
+		for (int k = j; k < 12; k++)
+			cout << " ";
 		sName = bs1[i].getcityName2();
 		cout << sName;
 		j = strlen(sName);
-		for (int k = j; k < 14; k++) cout << " ";
+		for (int k = j; k < 14; k++)
+			cout << " ";
 		cout << bs1[i].getSeats() << endl;
-
-		//cout<<"   "<<bs1[i].getLeadCandidateId()<<endl;
 	}
 }
 
-/*void setCityLeadCandidate(){
-   getCityCount();
-   City bs1[cityCount];
-   for(int i=0;i<cityCount;i++){
-      bs1[i].getCity(i);
-      bs1[i].setLeadCandidateId(0);
-   }
-
-
-   remove("Cities.txt");
-   for(int i=0;i<cityCount;i++){bs1[i].storeCity();}
-   cout<<"\n\n   Record Inserted\n\n   Press any Key To Update The Record";
-   
-}*/
 class Password
 {
 private:
@@ -1005,9 +1018,9 @@ public:
 		strcpy(password, "1234");
 	}
 
-	char* getPassword() { return password; }
+	char *getPassword() { return password; }
 	string getPassword2() { return password; }
-	void setPassword(const char* pWord) { strcpy(password, pWord); }
+	void setPassword(const char *pWord) { strcpy(password, pWord); }
 };
 
 class Party : public Password
@@ -1033,7 +1046,7 @@ public:
 		GetPartyIdNo();
 		PartyID = ++partyId;
 		SetPartyIdNo();
-		//partyCount++;
+		// partyCount++;
 		votes = 0;
 		seats = 0;
 		Members = 1;
@@ -1061,11 +1074,11 @@ public:
 				break;
 			}
 		}
-		//cout<<"\n\nPassword : "<<arr;
+		// cout<<"\n\nPassword : "<<arr;
 	}
 
-	char* getPartyName() { return partyName; }
-	char* getHeadName() { return headName; }
+	char *getPartyName() { return partyName; }
+	char *getHeadName() { return headName; }
 	string getPartyName2() { return partyName; }
 
 	int getPartyId() { return PartyID; }
@@ -1073,8 +1086,8 @@ public:
 	int getMembers() { return Members; }
 	int getSeats() { return seats; }
 
-	void setPartyName(const char* newName) { strcpy(partyName, newName); }
-	void setHeadName(const char* newName) { strcpy(headName, newName); }
+	void setPartyName(const char *newName) { strcpy(partyName, newName); }
+	void setHeadName(const char *newName) { strcpy(headName, newName); }
 	void setVotes(int n) { votes = n; }
 	void setPartyId(int n) { PartyID = n; }
 	void setMembers(int n) { Members = n; }
@@ -1128,7 +1141,8 @@ public:
 		cout << "\n\n   Enter Your Gender(M/F)     :  " << gender << "\n\n";
 		GetStateCount();
 		State bs1[stateCount];
-		cout << endl << "   S.No.  State\n\n";
+		cout << endl
+			 << "   S.No.  State\n\n";
 		for (int i = 0; i < stateCount; i++)
 		{
 			bs1[i].getStates(i);
@@ -1158,7 +1172,8 @@ public:
 		cout << "\n\n   Select Your State          :  " << getstateName2() << "\n\n";
 		GetCityCount();
 		City cs1[cityCount];
-		cout << endl << "   S.No.  City\n\n";
+		cout << endl
+			 << "   S.No.  City\n\n";
 		for (int i = 0; i < cityCount; i++)
 		{
 			cs1[i].getCity(i);
@@ -1191,13 +1206,15 @@ public:
 		cout << "\n\n   Select Your City          :  " << getcityName2() << "\n\n";
 		GetPartyIdNo();
 		Party ps1[partyId];
-		cout << endl << "   S.No.  Party\n\n";
+		cout << endl
+			 << "   S.No.  Party\n\n";
 		for (int i = 0; i < partyId; i++)
 		{
 			ps1[i].getParty(i);
 			cout << "   " << i + 1 << ".";
 			int j = countDigits(i + 1);
-			for (int k = j; k < 8; k++)cout << " ";
+			for (int k = j; k < 8; k++)
+				cout << " ";
 			cout << ps1[i].getPartyName() << endl;
 		}
 		cout << "\n   Choose Your Party (S.No) : ";
@@ -1214,8 +1231,10 @@ public:
 		ps1[sr - 1].setMembers(m + 1);
 		SetPartyIdNo();
 		remove("Party.txt");
-		for (int i = 0; i < partyId; i++) { ps1[i].storeParty(); }
-
+		for (int i = 0; i < partyId; i++)
+		{
+			ps1[i].storeParty();
+		}
 
 		funHeading("Creating Candidate Account : ");
 		cout << "\n\n   Your Id : " << candidateID;
@@ -1250,19 +1269,19 @@ public:
 			}
 		}
 
-		//cout<<"\n\nPassword : "<<arr;
+		// cout<<"\n\nPassword : "<<arr;
 	}
 
-	char* getCandidateName() { return candidateName; }
-	char* getCandidateDesignation() { return candidatePost; }
+	char *getCandidateName() { return candidateName; }
+	char *getCandidateDesignation() { return candidatePost; }
 	string getCandidateName2() { return candidateName; }
 	int getCandidateID() { return candidateID; }
 	int getSeats() { return seats; }
 	int getCandidateVotes() { return getVotes(); }
 
 	void setCandidateVotes(int n) { setVotes(n); }
-	void setCandidateName(const char* newName) { strcpy(candidateName, newName); }
-	void setCandidatePost(const char* newPost) { strcpy(candidatePost, newPost); }
+	void setCandidateName(const char *newName) { strcpy(candidateName, newName); }
+	void setCandidatePost(const char *newPost) { strcpy(candidatePost, newPost); }
 	void setSeats(int n) { seats = n; }
 
 	int storeCandidate();
@@ -1274,12 +1293,15 @@ int Party::getParty(int x)
 	int i = 0;
 	ifstream finPartyRecord;
 	finPartyRecord.open("Party.txt", ios::in | ios::binary);
-	if (!finPartyRecord) { cout << "\n   File not Found"; }
+	if (!finPartyRecord)
+	{
+		cout << "\n   File not Found";
+	}
 	else
 	{
 		while (!finPartyRecord.eof() && i != x + 1)
 		{
-			finPartyRecord.read(reinterpret_cast<char*>(this), sizeof(*this));
+			finPartyRecord.read(reinterpret_cast<char *>(this), sizeof(*this));
 			i++;
 		}
 	}
@@ -1289,46 +1311,27 @@ int Party::storeParty()
 {
 	ofstream foutParty;
 	foutParty.open("Party.txt", ios::app | ios::binary);
-	foutParty.write(reinterpret_cast<char*>(this), sizeof(*this));
+	foutParty.write(reinterpret_cast<char *>(this), sizeof(*this));
 	foutParty.close();
-}
-
-int funPartyInput(Party* bs1, int x)
-{
-	Party obj;
-	cout << "   ";
-	obj.getPartyInfo();
-	/*string objName = obj.getPartyName2();
-	int j;
-	for(j = partyCount-1;j>0;j--){
-	   string cmpName = bs1[j-1].getPartyName2();
-	   int k = stringCmp(cmpName,objName);
-	   if(k==0){bs1[j] = bs1[j-1];}
-	   else{break;}
-	}*/
-	bs1[partyId - 1] = obj;
-
-	return obj.getPartyId();
 }
 
 int insertNewParty()
 {
 	int x = 1, Id = 0;
 	GetPartyIdNo();
-	//cout<<"\n   Enter the No. of State's you want to Insert: ";
-	//cin>>x;cin.ignore();
-	if (x == 0) { return Id; }
-	Party bs1[partyId + x];
+	// cout<<"\n   Enter the No. of State's you want to Insert: ";
+	// cin>>x;cin.ignore();
+	if (x == 0)
+	{
+		return Id;
+	}
 
 	funHeading("Inserting Party Record: \n");
-	for (int i = 0; i < partyId; i++)
-	{
-		bs1[i].getParty(i);
-	}
-	Id = funPartyInput(bs1, x);
+	Party obj;
+	obj.getPartyInfo();
+	Id = obj.getPartyId();
 	SetPartyIdNo();
-	remove("Party.txt");
-	for (int i = 0; i < partyId; i++) { bs1[i].storeParty(); }
+	obj.storeParty();
 	cout << "\n\n   Record Inserted\n\n   Press any Key To Insert The Record";
 
 	return Id;
@@ -1344,40 +1347,30 @@ int partyLogin()
 	}
 	Party bs1[partyId];
 	funHeading("Party Login Page: ");
-	cout << endl << "   S.No.   PartyName\n\n";
+	cout << endl
+		 << "   S.No.   PartyName\n\n";
 	for (int i = 0; i < partyId; i++)
 	{
 		bs1[i].getParty(i);
 		cout << "   " << i + 1 << ".";
 		int j = countDigits(i + 1);
-		for (int k = j; k < 8; k++) cout << " ";
+		for (int k = j; k < 8; k++)
+			cout << " ";
 		cout << bs1[i].getPartyName() << endl;
 	}
 	int x;
 	cout << "\n   Select the Party via S.No. : ";
 	cin >> x;
 	cin.ignore();
-	char paswrd[10], cr;
 	string cmpPaswrd = bs1[x - 1].getPassword2();
+	string paswrd;
 	cout << "\n   Enter Your Password: ";
-	for (int i = 0; i < 10; i++)
+	cin >> paswrd;
+	int match = paswrd.compare(cmpPaswrd);
+	if (!match)
 	{
-		cr = getchar();
-		if (cr != '\r')
-		{
-			paswrd[i] = cr;
-			cout << "*";
-		}
-		else
-		{
-			paswrd[i] = '\0';
-			break;
-		}
+		return bs1[x - 1].getPartyId();
 	}
-	//cout<<"\n\nPassword : "<<paswrd;
-	//cout<<"\n\nCmpPassword : "<<cmpPaswrd;
-	int match = strcmp(paswrd, cmpPaswrd.c_str()); 
-	if (!match) { return bs1[x - 1].getPartyId(); }
 	cout << "\n   Wrong Password!";
 
 	return 0;
@@ -1399,8 +1392,9 @@ int confirm()
 	char x;
 	cout << "\n   Are You Sure (y/n) : ";
 	cin >> x;
-	//x = cout<<x;
-	if (x == 'y' || x == 'Y') return 1;
+	// x = cout<<x;
+	if (x == 'y' || x == 'Y')
+		return 1;
 	return 0;
 }
 
@@ -1409,16 +1403,20 @@ void displayCandidateInfo(Candidate obj)
 	int c = 0;
 	c = countDigits(obj.getCandidateID());
 	cout << "   " << obj.getCandidateID();
-	for (int i = c; i < 7; i++) cout << " ";
+	for (int i = c; i < 7; i++)
+		cout << " ";
 	c = strlen(obj.getCandidateName());
 	cout << obj.getCandidateName();
-	for (int i = c; i < 25; i++) cout << " ";
+	for (int i = c; i < 25; i++)
+		cout << " ";
 	c = strlen(obj.getstateName2());
 	cout << obj.getstateName2();
-	for (int i = c; i < 20; i++) cout << " ";
+	for (int i = c; i < 20; i++)
+		cout << " ";
 	c = strlen(obj.getcityName2());
 	cout << obj.getcityName2();
-	for (int i = c; i < 20; i++) cout << " ";
+	for (int i = c; i < 20; i++)
+		cout << " ";
 	c = countDigits(obj.getVotes());
 	cout << obj.getVotes();
 }
@@ -1439,11 +1437,7 @@ void viewPartyInfo(int Id)
 	for (int i = 0; i < partyId; i++)
 	{
 		bs1[i].getParty(i);
-		/*if(bs1[i].getPartyId()==Id){
-		   sIndex = i;
-		}*/
 	}
-
 
 	obj = bs1[sIndex];
 	obj.setSeats(0);
@@ -1474,15 +1468,15 @@ choice:;
 	{
 	case 1:
 		goto choice1;
-	/*case 3:
-	   goto choice3;*/
 	case 2:
 		goto choice2;
 	case 0:
-		//bs1[sIndex].setMembers(3);
 		SetPartyIdNo();
 		remove("Party.txt");
-		for (int i = 0; i < partyId; i++) { bs1[i].storeParty(); }
+		for (int i = 0; i < partyId; i++)
+		{
+			bs1[i].storeParty();
+		}
 		return;
 	default:
 		cout << "\n   Enter the Correct Choice!";
@@ -1498,7 +1492,6 @@ choice1:;
 	cout << "\n\n\n   ID         Name                  State               City            Votes\n";
 	for (int i = 0; i < candidateId; i++)
 	{
-		//cs1[i].getCandidate(i);
 		if (cs1[i].getPartyId() == obj.getPartyId())
 		{
 			displayCandidateInfo(cs1[i]);
@@ -1564,12 +1557,15 @@ int Candidate::getCandidate(int x)
 	int i = 0;
 	ifstream finCandidateRecord;
 	finCandidateRecord.open("candidates.txt", ios::in | ios::binary);
-	if (!finCandidateRecord) { cout << "\n   File not Found"; }
+	if (!finCandidateRecord)
+	{
+		cout << "\n   File not Found";
+	}
 	else
 	{
 		while (!finCandidateRecord.eof() && i != x + 1)
 		{
-			finCandidateRecord.read(reinterpret_cast<char*>(this), sizeof(*this));
+			finCandidateRecord.read(reinterpret_cast<char *>(this), sizeof(*this));
 			i++;
 		}
 	}
@@ -1579,37 +1575,25 @@ int Candidate::storeCandidate()
 {
 	ofstream foutCandidate;
 	foutCandidate.open("candidates.txt", ios::app | ios::binary);
-	foutCandidate.write(reinterpret_cast<char*>(this), sizeof(*this));
+	foutCandidate.write(reinterpret_cast<char *>(this), sizeof(*this));
 	foutCandidate.close();
-}
-
-int funCandidateInput(Candidate* bs1, int x)
-{
-	Candidate obj;
-	cout << "   ";
-	obj.getCandidateInfo();
-
-	bs1[candidateId - 1] = obj;
-
-	return obj.getCandidateID();
 }
 
 int insertNewCandidate()
 {
 	int x = 1, Id = 0;
 	GetCandidateId();
-	if (x == 0) { return Id; }
-	Candidate bs1[candidateId + x];
+	if (x == 0)
+	{
+		return Id;
+	}
 
 	funHeading("Creating Candidate Account : \n");
-	for (int i = 0; i < candidateId; i++)
-	{
-		bs1[i].getCandidate(i);
-	}
-	Id = funCandidateInput(bs1, x);
+	Candidate obj;
+	obj.getCandidateInfo();
+	Id = obj.getCandidateID();
 	setCandidateId();
-	remove("candidates.txt");
-	for (int i = 0; i < candidateId; i++) { bs1[i].storeCandidate(); }
+	obj.storeCandidate();
 	cout << "\n\n   Record Inserted\n\n   Press any Key To Insert The Record";
 
 	return Id;
@@ -1641,13 +1625,7 @@ redo:;
 	{
 		f = true;
 	}
-	/*for(int i=0;i<candidateId;i++){
-	   if(Id == bs1[i].getCandidateID()){
-	      index = i;
-	      f=1;
-	      break;
-	   }
-	}*/
+
 	if (f != 1)
 	{
 		cout << "\n   No Account exists with this Id!";
@@ -1671,10 +1649,12 @@ redo:;
 			break;
 		}
 	}
-	//cout<<"\n\nPassword : "<<paswrd;
-	//cout<<"\n\nCmpPassword : "<<cmpPaswrd;
+
 	int match = strcmp(paswrd, cmpPaswrd.c_str());
-	if (!match) { return bs1[index].getCandidateID(); }
+	if (!match)
+	{
+		return bs1[index].getCandidateID();
+	}
 	cout << "\n   Wrong Password!";
 	return 0;
 }
@@ -1702,12 +1682,7 @@ void viewCandidateInfo(int Id)
 	Candidate bs1[candidateId], obj;
 	int sIndex = Id - 1;
 	for (int i = 0; i < candidateId; i++)
-	{
 		bs1[i].getCandidate(i);
-		/*if(bs1[i].getCandidateID()==Id){
-		sIndex = i;
-		}*/
-	}
 redo:;
 	obj = bs1[sIndex];
 	funHeading("Welcome : ");
@@ -1730,7 +1705,10 @@ choice:;
 	case 0:
 		/*setPartyCount();*/
 		remove("candidates.txt");
-		for (int i = 0; i < candidateId; i++) { bs1[i].storeCandidate(); }
+		for (int i = 0; i < candidateId; i++)
+		{
+			bs1[i].storeCandidate();
+		}
 		return;
 	default:
 		cout << "\n   Enter the Correct Choice!";
@@ -1861,7 +1839,8 @@ public:
 		cout << "\n\n   Enter Your Gender(M/F)     :  " << gender << "\n\n";
 		GetStateCount();
 		State bs1[stateCount];
-		cout << endl << "   S.No.  State\n\n";
+		cout << endl
+			 << "   S.No.  State\n\n";
 		for (int i = 0; i < stateCount; i++)
 		{
 			bs1[i].getStates(i);
@@ -1891,7 +1870,8 @@ public:
 		cout << "\n\n   Select Your State          :  " << getstateName2() << "\n\n";
 		GetCityCount();
 		City cs1[cityCount];
-		cout << endl << "   S.No.  City\n\n";
+		cout << endl
+			 << "   S.No.  City\n\n";
 		for (int i = 0; i < cityCount; i++)
 		{
 			cs1[i].getCity(i);
@@ -1923,7 +1903,6 @@ public:
 		cout << "\n\n   Select Your State          :  " << getstateName2();
 		cout << "\n\n   Select Your City           :  " << getcityName2() << "\n\n";
 
-
 		partyId = 0;
 		strcpy(partyName, "null");
 		setLeadCandidateId(0);
@@ -1948,16 +1927,16 @@ public:
 		setVoterId();
 	}
 
-	char* getVoterName() { return voterName; }
-	char* getVoterPartyName() { return partyName; }
+	char *getVoterName() { return voterName; }
+	char *getVoterPartyName() { return partyName; }
 	string getVoterName2() { return voterName; }
 	int getVoterID() { return voterID; }
 	int getVoterAge() { return age; }
 	char getVoterGender() { return gender; }
 	int getVoterPartyId() { return partyId; }
 
-	void setVoterName(const char* newName) { strcpy(voterName, newName); }
-	void setPartyName(const char* newParty) { strcpy(partyName, newParty); }
+	void setVoterName(const char *newName) { strcpy(voterName, newName); }
+	void setPartyName(const char *newParty) { strcpy(partyName, newParty); }
 	void setPartyId(int n) { partyId = n; }
 	void setAge(int n) { age = n; }
 	int storeVoter();
@@ -1969,12 +1948,15 @@ int Voter::getVoter(int x)
 	int i = 0;
 	ifstream finVoterRecord;
 	finVoterRecord.open("voter.txt", ios::in | ios::binary);
-	if (!finVoterRecord) { cout << "\n   File not Found"; }
+	if (!finVoterRecord)
+	{
+		cout << "\n   File not Found";
+	}
 	else
 	{
 		while (!finVoterRecord.eof() && i != x + 1)
 		{
-			finVoterRecord.read(reinterpret_cast<char*>(this), sizeof(*this));
+			finVoterRecord.read(reinterpret_cast<char *>(this), sizeof(*this));
 			i++;
 		}
 	}
@@ -1984,11 +1966,11 @@ int Voter::storeVoter()
 {
 	ofstream foutVoter;
 	foutVoter.open("voter.txt", ios::app | ios::binary);
-	foutVoter.write(reinterpret_cast<char*>(this), sizeof(*this));
+	foutVoter.write(reinterpret_cast<char *>(this), sizeof(*this));
 	foutVoter.close();
 }
 
-int funVoterInput(Voter* b, int x)
+int funVoterInput(Voter *b, int x)
 {
 	Voter obj;
 	cout << "   ";
@@ -2003,7 +1985,10 @@ int insertNewVoter()
 {
 	int x = 1, Id = 0;
 	GetVoterId();
-	if (x == 0) { return Id; }
+	if (x == 0)
+	{
+		return Id;
+	}
 	Voter bs1[voterId + x];
 
 	funHeading("Creating Voter Account : \n");
@@ -2014,7 +1999,10 @@ int insertNewVoter()
 	Id = funVoterInput(bs1, x);
 	setVoterId();
 	remove("voter.txt");
-	for (int i = 0; i < voterId; i++) { bs1[i].storeVoter(); }
+	for (int i = 0; i < voterId; i++)
+	{
+		bs1[i].storeVoter();
+	}
 	cout << "\n\n   Record Inserted\n\n   Press any Key To Insert The Record";
 
 	return Id;
@@ -2042,18 +2030,10 @@ redo:;
 	cin.ignore();
 	bool f = false;
 	int index = Id - 1;
-	//cout<<bs1[index].getVoterID();
 	if (Id == bs1[index].getVoterID())
 	{
 		f = true;
 	}
-	/*for(int i=0;i<voterId;i++){
-	   if(Id == bs1[i].getVoterID()){
-	      index = i;
-	      f=1;
-	      break;
-	   }
-	}*/
 	if (f != 1)
 	{
 		cout << "\n   No Account exists with this Id!";
@@ -2077,10 +2057,12 @@ redo:;
 			break;
 		}
 	}
-	//cout<<"\n\nPassword : "<<paswrd;
-	//cout<<"\n\nCmpPassword : "<<cmpPaswrd;
-	int match = strcmp(paswrd, cmpPaswrd.c_str()); 
-	if (!match) { return Id; }
+
+	int match = strcmp(paswrd, cmpPaswrd.c_str());
+	if (!match)
+	{
+		return Id;
+	}
 	cout << "\n   Wrong Password!";
 	return 0;
 }
@@ -2102,18 +2084,13 @@ void displayCandidateForVote(Candidate obj)
 	int c = 0;
 	c = countDigits(obj.getCandidateID());
 	cout << "   " << obj.getCandidateID();
-	for (int i = c; i < 7; i++) cout << " ";
+	for (int i = c; i < 7; i++)
+		cout << " ";
 	cout << obj.getCandidateName() << string(strlen(obj.getCandidateName()), ' ');
-	/*c=strlen(obj.getstateName2());
-	cout<<obj.getstateName2();
-	for(int i=c;i<20;i++) cout<<" ";
-	c=strlen(obj.getcityName2());
-	cout<<obj.getcityName2();
-	for(int i=c;i<20;i++) cout<<" ";*/
 	cout << obj.getPartyName();
 }
 
-void voterMakeVote(Voter* vs1, int Id)
+void voterMakeVote(Voter *vs1, int Id)
 {
 	GetCandidateId();
 	Candidate cs1[candidateId];
@@ -2145,8 +2122,7 @@ void voterMakeVote(Voter* vs1, int Id)
 	cout << "\n\n   Select via Id whom you want to vote :  ";
 	cin >> selectedId;
 	char ays;
-	cout << "\n   Are you sure to vote for " << cs1[selectedId - 1].getCandidateName() << " ( " << cs1[
-		selectedId - 1].getPartyName() << " ) (y/n):";
+	cout << "\n   Are you sure to vote for " << cs1[selectedId - 1].getCandidateName() << " ( " << cs1[selectedId - 1].getPartyName() << " ) (y/n):";
 	cin >> ays;
 	if (ays == 'y' || ays == 'Y')
 	{
@@ -2158,7 +2134,10 @@ void voterMakeVote(Voter* vs1, int Id)
 		if (leadingCandidate != 0)
 		{
 			int maxvotes = cs1[leadingCandidate - 1].getCandidateVotes();
-			if (vote > maxvotes) { city1[cIndex].setLeadCandidateId(selectedId); }
+			if (vote > maxvotes)
+			{
+				city1[cIndex].setLeadCandidateId(selectedId);
+			}
 		}
 		else
 		{
@@ -2190,13 +2169,20 @@ void voterMakeVote(Voter* vs1, int Id)
 			}
 		}
 		remove("Cities.txt");
-		for (int i = 0; i < cityCount; i++) { city1[i].storeCity(); }
+		for (int i = 0; i < cityCount; i++)
+		{
+			city1[i].storeCity();
+		}
 		remove("candidates.txt");
-		for (int i = 0; i < candidateId; i++) { cs1[i].storeCandidate(); }
+		for (int i = 0; i < candidateId; i++)
+		{
+			cs1[i].storeCandidate();
+		}
 
 		cout << "\n   Voted Successfully\n\n   Press any Key To Update Data";
 	}
-	else return;
+	else
+		return;
 }
 
 void viewVoterInfo(int Id)
@@ -2212,9 +2198,6 @@ void viewVoterInfo(int Id)
 	for (int i = 0; i < voterId; i++)
 	{
 		bs1[i].getVoter(i);
-		/*if(bs1[i].getVoterID()==Id){
-		sIndex = i;
-		}*/
 	}
 redo:;
 	obj = bs1[sIndex];
@@ -2231,23 +2214,19 @@ choice:;
 	{
 	case 1:
 		able = obj.getVoterPartyId();
-	//cout<<able;
 		if (able == 0)
-		{
 			voterMakeVote(bs1, Id);
-		}
 		else
-		{
 			cout << "\n   You have already voted.Now you can't change your vote";
-			//voterMakeVote(bs1,Id);
-		}
 		goto redo;
 	case 2:
 		goto choice2;
 	case 0:
-		/*setPartyCount();*/
 		remove("voter.txt");
-		for (int i = 0; i < voterId; i++) { bs1[i].storeVoter(); }
+		for (int i = 0; i < voterId; i++)
+		{
+			bs1[i].storeVoter();
+		}
 		return;
 	default:
 		cout << "\n   Enter the Correct Choice!";
@@ -2349,13 +2328,15 @@ public:
 		cin >> high;
 		GetPartyIdNo();
 		Party ps1[partyId];
-		cout << endl << "   ID  Party\n\n";
+		cout << endl
+			 << "   ID  Party\n\n";
 		for (int i = 0; i < partyId; i++)
 		{
 			ps1[i].getParty(i);
 			cout << "   " << ps1[i].getPartyId() << ".";
 			int j = countDigits(i + 1);
-			for (int k = j; k < 8; k++)cout << " ";
+			for (int k = j; k < 8; k++)
+				cout << " ";
 			cout << ps1[i].getPartyName() << endl;
 		}
 		cout << "\n   Choose The Party (ID) : ";
@@ -2380,12 +2361,15 @@ int Interval::getInterval(int x)
 	int i = 0;
 	ifstream finIntervalRecord;
 	finIntervalRecord.open("Record.txt", ios::in | ios::binary);
-	if (!finIntervalRecord) { cout << "\n   File not Found"; }
+	if (!finIntervalRecord)
+	{
+		cout << "\n   File not Found";
+	}
 	else
 	{
 		while (!finIntervalRecord.eof() && i != x + 1)
 		{
-			finIntervalRecord.read(reinterpret_cast<char*>(this), sizeof(*this));
+			finIntervalRecord.read(reinterpret_cast<char *>(this), sizeof(*this));
 			i++;
 		}
 	}
@@ -2395,18 +2379,18 @@ int Interval::storeInterval()
 {
 	ofstream foutInterval;
 	foutInterval.open("Record.txt", ios::app | ios::binary);
-	foutInterval.write(reinterpret_cast<char*>(this), sizeof(*this));
+	foutInterval.write(reinterpret_cast<char *>(this), sizeof(*this));
 	foutInterval.close();
 }
 
 struct ITNode
 {
-	Interval* i;
+	Interval *i;
 	int max;
 	ITNode *left, *right;
 };
 
-ITNode* newNode(Interval i)
+ITNode *newNode(Interval i)
 {
 	auto temp = new ITNode;
 	temp->i = new Interval(i);
@@ -2415,27 +2399,32 @@ ITNode* newNode(Interval i)
 	return temp;
 }
 
-ITNode* insert(ITNode* root, Interval i)
+ITNode *insert(ITNode *root, Interval i)
 {
-	if (root == nullptr) return newNode(i);
+	if (root == nullptr)
+		return newNode(i);
 
 	int l = root->i->getLow();
 
-	if (i.getLow() < l) root->left = insert(root->left, i);
-	else root->right = insert(root->right, i);
+	if (i.getLow() < l)
+		root->left = insert(root->left, i);
+	else
+		root->right = insert(root->right, i);
 
-	if (root->max < i.getHigh()) root->max = i.getHigh();
+	if (root->max < i.getHigh())
+		root->max = i.getHigh();
 
 	return root;
 }
 
 bool doOVerlap(Interval i1, Interval i2)
 {
-	if (i1.getLow() < i2.getHigh() && i2.getLow() < i1.getHigh()) return true;
+	if (i1.getLow() < i2.getHigh() && i2.getLow() < i1.getHigh())
+		return true;
 	return false;
 }
 
-//segment start
+// segment start
 void build(int ind, int low, int high)
 {
 	if (low == high)
@@ -2483,8 +2472,8 @@ void update(int low, int high, int idx, int new_val, int ind)
 	seg[ind] = max(seg[2 * ind + 1], seg[2 * ind + 2]);
 }
 
-//segment end
-void displayResultRecord(ITNode* root)
+// segment end
+void displayResultRecord(ITNode *root)
 {
 	GetPartyIdNo();
 	Party bs1[partyId];
@@ -2494,36 +2483,38 @@ void displayResultRecord(ITNode* root)
 	}
 	int RpId = root->i->PID;
 	int c = 0;
-	//c=countDigits(obj.getCandidateID());
 	cout << "   " << root->i->low << " - " << root->i->high;
-	for (int i = 0; i < 7; i++) cout << " ";
+	for (int i = 0; i < 7; i++)
+		cout << " ";
 	c = countDigits(bs1[RpId - 1].getPartyId());
 	cout << bs1[RpId - 1].getPartyId();
-	for (int i = c; i < 7; i++) cout << " ";
+	for (int i = c; i < 7; i++)
+		cout << " ";
 	c = strlen(bs1[RpId - 1].getPartyName());
 	cout << bs1[RpId - 1].getPartyName() << string(c, ' ');
 	cout << bs1[RpId - 1].getHeadName() << "\n";
 }
 
-Interval* overlapSearchAllSorted(ITNode* root, Interval i)
+Interval *overlapSearchAllSorted(ITNode *root, Interval i)
 {
-	if (root == nullptr) return nullptr;
+	if (root == nullptr)
+		return nullptr;
 	if (root->left != nullptr && root->left->max >= i.low)
 		overlapSearchAllSorted(root->left, i);
-	if (doOVerlap(*(root->i), i)) displayResultRecord(root);
-	//cout <<"\nOverlaps with [" << root->i->getLow()<<","<<root->i->getHigh()<<"]    PartyID : "<<root->i->getpId();
+	if (doOVerlap(*(root->i), i))
+		displayResultRecord(root);
 	overlapSearchAllSorted(root->right, i);
 }
 
-void inorder(ITNode* root)
+void inorder(ITNode *root)
 {
-	if (root == nullptr) return;
+	if (root == nullptr)
+		return;
 	inorder(root->left);
 	cout << "[" << root->i->getLow() << ", " << root->i->getHigh() << "]"
-		<< " max = " << root->max << "PartyId = " << root->i->getpId() << endl;
+		 << " max = " << root->max << "PartyId = " << root->i->getpId() << endl;
 	inorder(root->right);
 }
-
 
 void displayVoterRecord(Voter bs1[], int vId)
 {
@@ -2553,8 +2544,10 @@ void displayVoterRecord(Voter bs1[], int vId)
 		cout << bs1[i].getcityName2();
 		cout << std::string(15, ' ');
 		c = bs1[i].getVoterPartyId();
-		if (c == 0)cout << "0\n";
-		else cout << "1\n";
+		if (c == 0)
+			cout << "0\n";
+		else
+			cout << "1\n";
 	}
 }
 
@@ -2594,16 +2587,28 @@ redo:;
 		{
 			string cmpState = bs2[j - 1].getstateName();
 			int k = cmpState.compare(objState);
-			if (k < 0) { bs2[j] = bs2[j - 1]; }
+			if (k < 0)
+			{
+				bs2[j] = bs2[j - 1];
+			}
 			else if (!k)
 			{
 				string objCity = obj.getcityName();
 				string cmpCity = bs2[j - 1].getcityName();
 				int k = cmpCity.compare(objCity);
-				if (k < 0) { bs2[j] = bs2[j - 1]; }
-				else { goto in; }
+				if (k < 0)
+				{
+					bs2[j] = bs2[j - 1];
+				}
+				else
+				{
+					goto in;
+				}
 			}
-			else { break; }
+			else
+			{
+				break;
+			}
 		}
 	in:;
 		id++;
@@ -2617,20 +2622,22 @@ void displayCandidateRecord(Candidate bs1[], int cId)
 {
 	funHeading("Candidate's Record : ");
 
-	cout <<
-		"\n   ID     NAME                     PARTYNAME                    STATE           CITY         VOTES  SEATS\n\n";
+	cout << "\n   ID     NAME                     PARTYNAME                    STATE           CITY         VOTES  SEATS\n\n";
 	for (int i = 0; i < cId; i++)
 	{
 		int c = 0;
 		c = countDigits(bs1[i].getCandidateID());
 		cout << "   " << bs1[i].getCandidateID();
-		for (int i = c; i < 7; i++) cout << " ";
+		for (int i = c; i < 7; i++)
+			cout << " ";
 		c = strlen(bs1[i].getCandidateName());
 		cout << bs1[i].getCandidateName();
-		for (int i = c; i < 25; i++) cout << " ";
+		for (int i = c; i < 25; i++)
+			cout << " ";
 		c = strlen(bs1[i].getPartyName());
 		cout << bs1[i].getPartyName();
-		for (int i = c; i < 30; i++) cout << " ";
+		for (int i = c; i < 30; i++)
+			cout << " ";
 		c = strlen(bs1[i].getstateName2());
 		cout << bs1[i].getstateName2();
 		cout << std::string(15, ' ');
@@ -2639,7 +2646,8 @@ void displayCandidateRecord(Candidate bs1[], int cId)
 		cout << std::string(15, ' ');
 		c = countDigits(bs1[i].getCandidateVotes());
 		cout << bs1[i].getCandidateVotes();
-		for (int i = c; i < 7; i++) cout << " ";
+		for (int i = c; i < 7; i++)
+			cout << " ";
 		cout << bs1[i].getSeats() << "\n";
 	}
 }
@@ -2688,24 +2696,42 @@ redo:;
 			{
 				string cmpState = bs2[j - 1].getstateName();
 				int k = cmpState.compare(objState);
-				if (k < 0) { bs2[j] = bs2[j - 1]; }
+				if (k < 0)
+				{
+					bs2[j] = bs2[j - 1];
+				}
 				else if (!k)
 				{
 					string objCity = obj.getcityName();
 					string cmpCity = bs2[j - 1].getcityName();
 					int k = cmpCity.compare(objCity);
-					if (k < 0) { bs2[j] = bs2[j - 1]; }
+					if (k < 0)
+					{
+						bs2[j] = bs2[j - 1];
+					}
 					else if (!k)
 					{
 						string objParty = obj.getPartyName2();
 						string cmpParty = bs2[j - 1].getPartyName2();
 						int k = cmpParty.compare(objParty);
-						if (k < 0) { bs2[j] = bs2[j - 1]; }
-						else { goto in; }
+						if (k < 0)
+						{
+							bs2[j] = bs2[j - 1];
+						}
+						else
+						{
+							goto in;
+						}
 					}
-					else { goto in; }
+					else
+					{
+						goto in;
+					}
 				}
-				else { break; }
+				else
+				{
+					break;
+				}
 			}
 		in:;
 			id++;
@@ -2725,24 +2751,42 @@ redo:;
 			{
 				string cmpParty = bs2[j - 1].getPartyName2();
 				int k = cmpParty.compare(objParty);
-				if (k < 0) { bs2[j] = bs2[j - 1]; }
+				if (k < 0)
+				{
+					bs2[j] = bs2[j - 1];
+				}
 				else if (!k)
 				{
 					string objState = obj.getstateName();
 					string cmpState = bs2[j - 1].getstateName();
 					int k = cmpState.compare(objState);
-					if (k < 0) { bs2[j] = bs2[j - 1]; }
+					if (k < 0)
+					{
+						bs2[j] = bs2[j - 1];
+					}
 					else if (!k)
 					{
 						string objCity = obj.getcityName();
 						string cmpCity = bs2[j - 1].getcityName();
 						int k = cmpCity.compare(objCity);
-						if (k < 0) { bs2[j] = bs2[j - 1]; }
-						else { goto in2; }
+						if (k < 0)
+						{
+							bs2[j] = bs2[j - 1];
+						}
+						else
+						{
+							goto in2;
+						}
 					}
-					else { goto in2; }
+					else
+					{
+						goto in2;
+					}
 				}
-				else { break; }
+				else
+				{
+					break;
+				}
 			}
 		in2:;
 			id++;
@@ -2774,13 +2818,16 @@ void viewPartyRecord()
 		int c = 0;
 		c = countDigits(bs1[i].getPartyId());
 		cout << "   " << bs1[i].getPartyId();
-		for (int i = c; i < 7; i++) cout << " ";
+		for (int i = c; i < 7; i++)
+			cout << " ";
 		c = strlen(bs1[i].getPartyName());
 		cout << bs1[i].getPartyName();
-		for (int i = c; i < 30; i++) cout << " ";
+		for (int i = c; i < 30; i++)
+			cout << " ";
 		c = strlen(bs1[i].getHeadName());
 		cout << bs1[i].getHeadName();
-		for (int i = c; i < 20; i++) cout << " ";
+		for (int i = c; i < 20; i++)
+			cout << " ";
 		cout << bs1[i].getMembers() << "\n";
 	}
 
@@ -2813,7 +2860,10 @@ void ResetVotes()
 					vs1[i].setPartyName("null");
 				}
 				remove("voter.txt");
-				for (int i = 0; i < voterId; i++) { vs1[i].storeVoter(); }
+				for (int i = 0; i < voterId; i++)
+				{
+					vs1[i].storeVoter();
+				}
 			}
 		}
 		if (ch == 2)
@@ -2829,17 +2879,20 @@ void ResetVotes()
 					cs1[i].setSeats(0);
 				}
 				remove("candidates.txt");
-				for (int i = 0; i < candidateId; i++) { cs1[i].storeCandidate(); }
+				for (int i = 0; i < candidateId; i++)
+				{
+					cs1[i].storeCandidate();
+				}
 			}
 		}
 
-
 		cout << "\n\n   Record has been reseted. Press any Key to Go Back";
 	}
-	else return;
+	else
+		return;
 }
 
-void funIntervalInput(Interval* b)
+void funIntervalInput(Interval *b)
 {
 	Interval obj;
 	obj.getIntervalInfo();
@@ -2848,8 +2901,14 @@ void funIntervalInput(Interval* b)
 	for (j = resultId - 1; j > 0; j--)
 	{
 		int cmppId = b[j - 1].getpId();
-		if (objpID < cmppId) { b[j] = b[j - 1]; }
-		else { break; }
+		if (objpID < cmppId)
+		{
+			b[j] = b[j - 1];
+		}
+		else
+		{
+			break;
+		}
 	}
 	b[j] = obj;
 }
@@ -2863,12 +2922,15 @@ void setResultRecord()
 	for (int i = 0; i < resultId; i++)
 	{
 		bs1[i].getInterval(i);
-		//cout<<"\n   "<<bs1[i].low<<" - "<<bs1[i].high<<"     PartyId: "<<bs1[i].PID;
+		// cout<<"\n   "<<bs1[i].low<<" - "<<bs1[i].high<<"     PartyId: "<<bs1[i].PID;
 	}
 	funIntervalInput(bs1);
 	setResultId();
 	remove("Record.txt");
-	for (int i = 0; i < resultId; i++) { bs1[i].storeInterval(); }
+	for (int i = 0; i < resultId; i++)
+	{
+		bs1[i].storeInterval();
+	}
 	cout << "\n\n   Record Inserted\n\n   Press any Key To Insert The Record";
 }
 
@@ -2905,56 +2967,20 @@ redo:;
 		int c = 0;
 		c = strlen(p1[j].getPartyName());
 		cout << "   " << p1[j].getPartyName();
-		for (int k = c; k < 30; k++) cout << " ";
+		for (int k = c; k < 30; k++)
+			cout << " ";
 		c = strlen(p1[j].getHeadName());
 		cout << p1[j].getHeadName();
-		for (int k = c; k < 25; k++) cout << " ";
+		for (int k = c; k < 25; k++)
+			cout << " ";
 		c = countDigits(p1[j].getVotes());
 		cout << p1[j].getVotes();
-		for (int k = c; k < 10; k++) cout << " ";
-		//c=countDigits(c1[i].getSeats());
+		for (int k = c; k < 10; k++)
+			cout << " ";
+		// c=countDigits(c1[i].getSeats());
 		cout << p1[j].getSeats();
 		cout << "\n";
 	}
-
-
-	/*for(int j=0;j<partyId;j++){
-	   p1[j].getParty(j);
-	   p1[j].setSeats(0);
-	   p1[j].setVotes(0);
-	   bool f = 0;
-	   for(int i=0;i<candidateId;i++){
-	      c1[i].getCandidate(i);
-	      if(c1[i].getPartyId() == p1[j].getPartyId()){
- 
-	         f = 1;
-	         int pseats = p1[j].getSeats();
-	         pseats = pseats + c1[i].getSeats();
-	         p1[j].setSeats(pseats);
-	         int pVotes = p1[j].getVotes();
-	         pVotes = pVotes + c1[i].getCandidateVotes();
-	         p1[j].setVotes(pVotes);
- 
-	      }
-	   }
- 
-	   if(f == 1){
-	      int c=0;
-	      c=strlen(p1[j].getPartyName());
-	      cout<<"   "<<p1[j].getPartyName();
-	      for(int k=c;k<30;k++) cout<<" ";
-	      c=strlen(p1[j].getHeadName());
-	      cout<<p1[j].getHeadName();
-	      for(int k=c;k<25;k++) cout<<" ";
-	      c=countDigits(p1[j].getVotes());
-	      cout<<p1[j].getVotes();
-	      for(int k=c;k<10;k++) cout<<" ";
-	      //c=countDigits(c1[i].getSeats());
-	      cout<<p1[j].getSeats();
-	      cout<<"\n";
-	   }
-	}
-	*/
 }
 
 void showResult2()
@@ -2963,7 +2989,8 @@ redo:;
 	funHeading("Showing result for a Specific State : ");
 	GetStateCount();
 	State bs1[stateCount];
-	cout << endl << "   S.No.  State\n\n";
+	cout << endl
+		 << "   S.No.  State\n\n";
 	for (int i = 0; i < stateCount; i++)
 	{
 		bs1[i].getStates(i);
@@ -2984,9 +3011,8 @@ redo:;
 
 redo2:;
 	funHeading("Showing result for a Specific State : ");
-	cout << "\n\n   Selected State          :  " << bs1[sr - 1].getstateName2() << " (" << bs1[sr - 1].
-		getSeats() << ")" << "\n\n";
-
+	cout << "\n\n   Selected State          :  " << bs1[sr - 1].getstateName2() << " (" << bs1[sr - 1].getSeats() << ")"
+		 << "\n\n";
 
 	cout << "\n   PartyName                     HeadName               Votes     Seats\n\n";
 	GetPartyIdNo();
@@ -3023,14 +3049,17 @@ redo2:;
 			int c = 0;
 			c = strlen(p1[j].getPartyName());
 			cout << "   " << p1[j].getPartyName();
-			for (int k = c; k < 30; k++) cout << " ";
+			for (int k = c; k < 30; k++)
+				cout << " ";
 			c = strlen(p1[j].getHeadName());
 			cout << p1[j].getHeadName();
-			for (int k = c; k < 25; k++) cout << " ";
+			for (int k = c; k < 25; k++)
+				cout << " ";
 			c = countDigits(p1[j].getVotes());
 			cout << p1[j].getVotes();
-			for (int k = c; k < 10; k++) cout << " ";
-			//c=countDigits(c1[i].getSeats());
+			for (int k = c; k < 10; k++)
+				cout << " ";
+			// c=countDigits(c1[i].getSeats());
 			cout << p1[j].getSeats();
 			cout << "\n";
 		}
@@ -3043,7 +3072,8 @@ redo:;
 	funHeading("Showing result for a Specific District : ");
 	GetStateCount();
 	State bs1[stateCount];
-	cout << endl << "   S.No.  State\n\n";
+	cout << endl
+		 << "   S.No.  State\n\n";
 	for (int i = 0; i < stateCount; i++)
 	{
 		bs1[i].getStates(i);
@@ -3067,7 +3097,8 @@ redo2:;
 	cout << "\n\n   Select Your State          :  " << bs1[sr - 1].getstateName2() << "\n\n";
 	GetCityCount();
 	City cs1[cityCount];
-	cout << endl << "   S.No.  City\n\n";
+	cout << endl
+		 << "   S.No.  City\n\n";
 	for (int i = 0; i < cityCount; i++)
 	{
 		cs1[i].getCity(i);
@@ -3093,8 +3124,7 @@ redo2:;
 	cout << "\n\n   Selected State       :  " << bs1[sr - 1].getstateName2();
 	cout << "\n\n   Selected District    :  " << cs1[sr2 - 1].getcityName2() << "\n\n";
 
-	cout <<
-		"\n   PartyName                     HeadName                 CandidateName          Votes     Seats\n\n";
+	cout << "\n   PartyName                     HeadName                 CandidateName          Votes     Seats\n\n";
 	GetCandidateId();
 	Candidate c1[candidateId];
 	for (int i = 0; i < candidateId; i++)
@@ -3105,17 +3135,21 @@ redo2:;
 			int c = 0;
 			c = strlen(c1[i].getPartyName());
 			cout << "   " << c1[i].getPartyName();
-			for (int i = c; i < 30; i++) cout << " ";
+			for (int i = c; i < 30; i++)
+				cout << " ";
 			c = strlen(c1[i].getHeadName());
 			cout << c1[i].getHeadName();
-			for (int i = c; i < 25; i++) cout << " ";
+			for (int i = c; i < 25; i++)
+				cout << " ";
 			c = strlen(c1[i].getCandidateName());
 			cout << c1[i].getCandidateName();
-			for (int i = c; i < 25; i++) cout << " ";
+			for (int i = c; i < 25; i++)
+				cout << " ";
 			c = countDigits(c1[i].getCandidateVotes());
 			cout << c1[i].getCandidateVotes();
-			for (int i = c; i < 10; i++) cout << " ";
-			//c=countDigits(c1[i].getSeats());
+			for (int i = c; i < 10; i++)
+				cout << " ";
+			// c=countDigits(c1[i].getSeats());
 			cout << c1[i].getSeats();
 			cout << "\n";
 		}
@@ -3126,7 +3160,7 @@ void showResult4()
 {
 	GetResultId();
 	Interval bs1[resultId + 1];
-	ITNode* root = nullptr;
+	ITNode *root = nullptr;
 	funHeading("List of Record For Specific Interval : \n");
 	for (int i = 0; i < resultId; i++)
 	{
@@ -3143,7 +3177,6 @@ void showResult4()
 	cout << "   Interval          ID     PartyName                     HeadName\n\n";
 	overlapSearchAllSorted(root, x);
 }
-
 
 void showResults()
 {
@@ -3174,7 +3207,7 @@ redo:;
 
 int main()
 {
-	//setCityLeadCandidate();
+	// setCityLeadCandidate();
 	funFrontPage();
 	int ch, Id = 0;
 
@@ -3184,15 +3217,24 @@ choice:;
 	{
 	case 0:
 		Id = VoterLogin();
-		if (Id != 0) { viewVoterInfo(Id); }
+		if (Id != 0)
+		{
+			viewVoterInfo(Id);
+		}
 		goto choice;
 	case 1:
 		Id = CandidateLogin();
-		if (Id != 0) { viewCandidateInfo(Id); }
+		if (Id != 0)
+		{
+			viewCandidateInfo(Id);
+		}
 		goto choice;
 	case 2:
 		Id = partyLogin();
-		if (Id != 0) { viewPartyInfo(Id); }
+		if (Id != 0)
+		{
+			viewPartyInfo(Id);
+		}
 		goto choice;
 	case 3:
 		goto choice3;
@@ -3215,15 +3257,24 @@ choice3:;
 	{
 	case 1:
 		Id = insertNewVoter();
-		if (Id != 0) { viewVoterInfo(Id); }
+		if (Id != 0)
+		{
+			viewVoterInfo(Id);
+		}
 		goto choice;
 	case 2:
 		Id = insertNewCandidate();
-		if (Id != 0) { viewCandidateInfo(Id); }
+		if (Id != 0)
+		{
+			viewCandidateInfo(Id);
+		}
 		goto choice;
 	case 3:
 		Id = insertNewParty();
-		if (Id != 0) { viewPartyInfo(Id); }
+		if (Id != 0)
+		{
+			viewPartyInfo(Id);
+		}
 		goto choice;
 	case 0:
 		goto choice;
@@ -3233,8 +3284,8 @@ choice3:;
 		goto choice;
 	}
 
-	//choice4:;
-	//goto Exit;
+	// choice4:;
+	// goto Exit;
 
 choice5:;
 	ch = choiceAdmin(2);
@@ -3328,7 +3379,6 @@ choice5c:;
 
 		goto choice5c;
 	}
-
 
 Exit:;
 	return 0;
