@@ -183,7 +183,7 @@ void setResultId()
 	foutResultId.close();
 }
 
-void clearScreen()
+void funFrontPage()
 {
 #if defined _WIN32
 	system("cls");
@@ -192,10 +192,10 @@ void clearScreen()
 #endif
 }
 
-
 void funHeading(std::string Heading)
 {
-	clearScreen();
+	funFrontPage();
+
 	std::cout << "   " << Heading << "\n";
 }
 
@@ -310,14 +310,14 @@ class State
 {
 private:
 	int stateId, seats;
-	string m_StateName;
+	char stateName[25];
 
 public:
 	State()
 	{
 		stateId = 0;
 		seats = 0;
-		m_StateName = "NoName";
+		strcpy(stateName, "NoName");
 	}
 
 	State(const char *sName)
@@ -325,6 +325,7 @@ public:
 		stateCount++;
 		stateId = stateCount;
 		seats = 0;
+		strcpy(stateName, sName);
 	}
 
 	void getStateInfo()
@@ -351,6 +352,7 @@ public:
 
 	std::string getstateName() const { return stateName; }
 	void setstateName(const char *sName) { strcpy(stateName, sName); }
+
 	int storeState();
 	int getStates(int x);
 };
@@ -762,7 +764,7 @@ class City : public State
 {
 private:
 	int cityId, LeadcandidateId;
-	string m_CityName;
+	char cityName[25];
 
 public:
 	City()
@@ -771,7 +773,7 @@ public:
 		setSeats(0);
 		LeadcandidateId = 0;
 		setstateName("NoName");
-		m_CityName = "No Name";
+		strcpy(cityName, "NoName");
 		cityId = 0;
 	}
 
@@ -815,7 +817,7 @@ int City::getCity(int x)
 {
 	int i = 0;
 	ifstream finCityRecord;
-	finCityRecord.open("Cities.bin", ios::in | ios::binary);
+	finCityRecord.open("Cities.txt", ios::in | ios::binary);
 	if (!finCityRecord)
 	{
 		std::cout << "\n   File not Found";
@@ -833,7 +835,7 @@ int City::getCity(int x)
 int City::storeCity()
 {
 	ofstream foutCity;
-	foutCity.open("Cities.bin", ios::app | ios::binary);
+	foutCity.open("Cities.txt", ios::app | ios::binary);
 	foutCity.write((char *)this, sizeof(*this));
 	foutCity.close();
 }
@@ -946,7 +948,7 @@ void insertNewCity()
 	{
 		bs1[i].storeState();
 	}
-	remove("Cities.bin");
+	remove("Cities.txt");
 	for (int i = 0; i < cityCount; i++)
 	{
 		c[i].storeCity();
@@ -2332,7 +2334,7 @@ void voterMakeVote(Voter *vs1, int Id)
 				}
 			}
 		}
-		remove("Cities.bin");
+		remove("Cities.txt");
 		for (int i = 0; i < cityCount; i++)
 		{
 			city1[i].storeCity();
@@ -3378,7 +3380,7 @@ void showResults()
 int main()
 {
 	// setCityLeadCandidate();
-	clearScreen();
+	funFrontPage();
 	int ch, Id = 0;
 
 choice:;
