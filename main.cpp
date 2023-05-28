@@ -350,7 +350,7 @@ public:
 	void setstateId(int id) { stateId = id; }
 
 	string getStateName() const { return m_StateName; }
-	void setstateName(const std::string& sName) { m_StateName = sName; }
+	void setstateName(const std::string &sName) { m_StateName = sName; }
 
 	int storeState();
 	int getStates(int x);
@@ -753,7 +753,7 @@ class City : public State
 {
 private:
 	int cityId, LeadcandidateId;
-	char cityName[25];
+	string m_CityName;
 
 public:
 	City()
@@ -762,20 +762,18 @@ public:
 		setSeats(0);
 		LeadcandidateId = 0;
 		setstateName("NoName");
-		strcpy(cityName, "NoName");
+		m_CityName = "No Name";
 		cityId = 0;
 	}
 
-	int getCityInfo(int sId,const char *sName)
+	int getCityInfo(int sId, const char *sName)
 	{
 		setstateId(sId);
 		setstateName(sName);
 		cout << "Enter the Name : ";
-		cin.getline(cityName, 24);
+		std::getline(std::cin >> std::ws, m_CityName);
 		cityCount++;
 		int s = 1;
-		/*cout<<"   Enter the No. of Seats : ";
-		cin>>s;cin.ignore();*/
 		setSeats(s);
 		GetCityIdNo();
 		cityId = ++cityIdNo;
@@ -786,18 +784,17 @@ public:
 
 	void showCityInfo()
 	{
-		cout << cityName << endl;
+		cout << m_CityName << endl;
 	}
 
 	// int getSeats(){return seats;}
 	// void setSeats(int x){seats = seats + x;}
 	int getcityId() { return cityId; }
-	string getcityName() { return cityName; }
-	char *getcityName2() { return cityName; }
-	int getLeadCandidateId() { return LeadcandidateId; }
+	string getCityName() const { return m_CityName; }
+	int getLeadCandidateId() const { return LeadcandidateId; }
 
 	void setCityId(int n) { cityId = n; }
-	void setcityName(char *name) { strcpy(cityName, name); }
+	void setcityName(const std::string &name) { m_CityName = name; }
 	int storeCity();
 	int getCity(int x);
 	void setLeadCandidateId(int n) { LeadcandidateId = n; }
@@ -807,7 +804,7 @@ int City::getCity(int x)
 {
 	int i = 0;
 	ifstream finCityRecord;
-	finCityRecord.open("Cities.txt", ios::in | ios::binary);
+	finCityRecord.open("Cities.bin", ios::in | ios::binary);
 	if (!finCityRecord)
 	{
 		cout << "\n   File not Found";
@@ -825,12 +822,12 @@ int City::getCity(int x)
 int City::storeCity()
 {
 	ofstream foutCity;
-	foutCity.open("Cities.txt", ios::app | ios::binary);
+	foutCity.open("Cities.bin", ios::app | ios::binary);
 	foutCity.write((char *)this, sizeof(*this));
 	foutCity.close();
 }
 
-int funCityInput(int stateId,const char *stateName, City *b, int x)
+int funCityInput(int stateId, const char *stateName, City *b, int x)
 {
 	int y = x + cityCount, stateSeats = 0;
 	City obj;
@@ -859,8 +856,8 @@ int funCityInput(int stateId,const char *stateName, City *b, int x)
 			}
 			else if (!k)
 			{
-				string objCity = obj.getcityName();
-				string cmpCity = b[j - 1].getcityName();
+				string objCity = obj.getCityName();
+				string cmpCity = b[j - 1].getCityName();
 				int k = cmpCity.compare(objCity);
 				if (k < 0)
 				{
@@ -917,7 +914,6 @@ void insertNewCity()
 	// funHeading("Inserting State's Record: ");
 	cout << endl
 		 << "\n\n   S.No.  CityName    Seats\n\n";
-	char *cName;
 	for (int i = 0; i < cityCount; i++)
 	{
 		c[i].getCity(i);
@@ -925,11 +921,8 @@ void insertNewCity()
 		int j = countDigits(i + 1);
 		for (int k = j; k < 8; k++)
 			cout << " ";
-		cName = c[i].getcityName2();
-		cout << cName;
-		j = strlen(cName);
-		for (int k = j; k < 14; k++)
-			cout << " ";
+		const string cName = c[i].getCityName();
+		cout << cName << string(14 - cName.length(), ' ');
 		cout << c[i].getSeats() << endl;
 		// cout<<"   "<<c[i].getstateId()<<"  "<<c[i].getstateName()<<endl;
 	}
@@ -942,7 +935,7 @@ void insertNewCity()
 	{
 		bs1[i].storeState();
 	}
-	remove("Cities.txt");
+	remove("Cities.bin");
 	for (int i = 0; i < cityCount; i++)
 	{
 		c[i].storeCity();
@@ -980,13 +973,10 @@ void viewCityRecord()
 		int j = countDigits(i + 1);
 		for (int k = j; k < 8; k++)
 			cout << " ";
-		string stateName = bs1[i].getStateName();
-		cout << stateName << string(12 - stateName.length(), ' ');
-		const char *sName = bs1[i].getcityName2();
-		cout << sName;
-		j = strlen(sName);
-		for (int k = j; k < 14; k++)
-			cout << " ";
+		string sName = bs1[i].getStateName();
+		cout << sName << string(12 - sName.length(), ' ');
+		sName = bs1[i].getCityName();
+		cout << sName << string(14 - sName.length(), ' ');
 		cout << bs1[i].getSeats() << endl;
 	}
 }
@@ -1178,7 +1168,7 @@ public:
 			goto redo2;
 		}
 		setCityId(cs1[sr - 1].getcityId());
-		setcityName(cs1[sr - 1].getcityName2());
+		setcityName(cs1[sr - 1].getCityName());
 
 	redo3:;
 		funHeading("Creating Candidate Account : ");
@@ -1187,7 +1177,7 @@ public:
 		cout << "\n\n   Enter Your Designation     :  " << candidatePost;
 		cout << "\n\n   Enter Your Gender(M/F)     :  " << gender;
 		cout << "\n\n   Select Your State          :  " << getStateName();
-		cout << "\n\n   Select Your City          :  " << getcityName2() << "\n\n";
+		cout << "\n\n   Select Your City          :  " << getCityName() << "\n\n";
 		GetPartyIdNo();
 		Party ps1[partyId];
 		cout << endl
@@ -1226,7 +1216,7 @@ public:
 		cout << "\n\n   Enter Your Designation     :  " << candidatePost;
 		cout << "\n\n   Enter Your Gender(M/F)     :  " << gender;
 		cout << "\n\n   Select Your State          :  " << getStateName();
-		cout << "\n\n   Select Your City           :  " << getcityName2();
+		cout << "\n\n   Select Your City           :  " << getCityName();
 		cout << "\n\n   Choose Your Party          :  " << getPartyName() << "\n\n";
 
 		setMembers(1);
@@ -1394,10 +1384,7 @@ void displayCandidateInfo(Candidate obj)
 	for (int i = c; i < 25; i++)
 		cout << " ";
 	cout << obj.getStateName() << string(20 - obj.getStateName().length(), ' ');
-	c = strlen(obj.getcityName2());
-	cout << obj.getcityName2();
-	for (int i = c; i < 20; i++)
-		cout << " ";
+	cout << obj.getCityName() << string(20 - obj.getCityName().length(), ' ');
 	c = countDigits(obj.getVotes());
 	cout << obj.getVotes();
 }
@@ -1672,7 +1659,7 @@ redo:;
 	cout << "\n\n   Name         : " << obj.getCandidateName();
 	cout << "\n   Designation  : " << obj.getCandidateDesignation();
 	cout << "\n   State        : " << obj.getStateName();
-	cout << "\n   City         : " << obj.getcityName2();
+	cout << "\n   City         : " << obj.getCityName();
 	cout << "\n   Votes        : " << obj.getVotes();
 	cout << "\n   Seats        : " << obj.getSeats();
 choice:;
@@ -1873,7 +1860,7 @@ public:
 			goto redo2;
 		}
 		setCityId(cs1[sr - 1].getcityId());
-		setcityName(cs1[sr - 1].getcityName2());
+		setcityName(cs1[sr - 1].getCityName());
 
 	redo3:;
 		funHeading("Creating Voter Account : ");
@@ -1882,7 +1869,7 @@ public:
 		cout << "\n\n   Enter Your Age             :  " << age;
 		cout << "\n\n   Enter Your Gender(M/F)     :  " << gender;
 		cout << "\n\n   Select Your State          :  " << getStateName();
-		cout << "\n\n   Select Your City           :  " << getcityName2() << "\n\n";
+		cout << "\n\n   Select Your City           :  " << getCityName() << "\n\n";
 
 		partyId = 0;
 		strcpy(partyName, "null");
@@ -2088,7 +2075,7 @@ void voterMakeVote(Voter *vs1, int Id)
 		}
 	}
 	funHeading("Making A Vote : \n");
-	cout << "   State : " << vs1[Id - 1].getStateName() << "        City : " << vs1[Id - 1].getcityName2();
+	cout << "   State : " << vs1[Id - 1].getStateName() << "        City : " << vs1[Id - 1].getCityName();
 	cout << "\n\n\n   ID      CandidateName                  Party\n";
 	for (int i = 0; i < candidateId; i++)
 	{
@@ -2149,7 +2136,7 @@ void voterMakeVote(Voter *vs1, int Id)
 				}
 			}
 		}
-		remove("Cities.txt");
+		remove("Cities.bin");
 		for (int i = 0; i < cityCount; i++)
 		{
 			city1[i].storeCity();
@@ -2188,7 +2175,7 @@ redo:;
 	cout << "\n   Age    : " << obj.getVoterAge();
 	cout << "\n   Gender : " << obj.getVoterGender();
 	cout << "\n   State  : " << obj.getStateName();
-	cout << "\n   City   : " << obj.getcityName2();
+	cout << "\n   City   : " << obj.getCityName();
 choice:;
 	int ch = choiceAdmin(8), able;
 	switch (ch)
@@ -2520,9 +2507,7 @@ void displayVoterRecord(Voter bs1[], int vId)
 
 		cout << bs1[i].getStateName();
 		cout << std::string(15 - bs1[i].getStateName().length(), ' ');
-		c = strlen(bs1[i].getcityName2());
-		cout << bs1[i].getcityName2();
-		cout << std::string(15 - c, ' ');
+		cout << bs1[i].getCityName() << std::string(15 - bs1[i].getCityName().length(), ' ');
 		c = bs1[i].getVoterPartyId();
 		if (c == 0)
 			cout << "0\n";
@@ -2573,8 +2558,8 @@ redo:;
 			}
 			else if (!k)
 			{
-				string objCity = obj.getcityName();
-				string cmpCity = bs2[j - 1].getcityName();
+				string objCity = obj.getCityName();
+				string cmpCity = bs2[j - 1].getCityName();
 				int k = cmpCity.compare(objCity);
 				if (k < 0)
 				{
@@ -2614,9 +2599,8 @@ void displayCandidateRecord(Candidate bs1[], int cId)
 		cout << bs1[i].getPartyName() << string(30 - c, ' ');
 		cout << bs1[i].getStateName();
 		cout << std::string(15 - bs1[i].getStateName().length(), ' ');
-		c = strlen(bs1[i].getcityName2());
-		cout << bs1[i].getcityName2();
-		cout << std::string(15 - c, ' ');
+		cout << bs1[i].getCityName();
+		cout << std::string(15 - bs1[i].getCityName().length(), ' ');
 		c = countDigits(bs1[i].getCandidateVotes());
 		cout << bs1[i].getCandidateVotes() << string(7 - c, ' ');
 		cout << bs1[i].getSeats() << "\n";
@@ -2673,8 +2657,8 @@ redo:;
 				}
 				else if (!k)
 				{
-					string objCity = obj.getcityName();
-					string cmpCity = bs2[j - 1].getcityName();
+					string objCity = obj.getCityName();
+					string cmpCity = bs2[j - 1].getCityName();
 					int k = cmpCity.compare(objCity);
 					if (k < 0)
 					{
@@ -2737,8 +2721,8 @@ redo:;
 					}
 					else if (!k)
 					{
-						string objCity = obj.getcityName();
-						string cmpCity = bs2[j - 1].getcityName();
+						string objCity = obj.getCityName();
+						string cmpCity = bs2[j - 1].getCityName();
 						int k = cmpCity.compare(objCity);
 						if (k < 0)
 						{
@@ -3093,7 +3077,7 @@ redo2:;
 
 	funHeading("Showing result for a Specific District : ");
 	cout << "\n\n   Selected State       :  " << bs1[sr - 1].getStateName();
-	cout << "\n\n   Selected District    :  " << cs1[sr2 - 1].getcityName2() << "\n\n";
+	cout << "\n\n   Selected District    :  " << cs1[sr2 - 1].getCityName() << "\n\n";
 
 	cout << "\n   PartyName                     HeadName                 CandidateName          Votes     Seats\n\n";
 	GetCandidateId();
