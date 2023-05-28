@@ -1093,8 +1093,7 @@ public:
 		strcpy(password, "1234");
 	}
 
-	char *getPassword() { return password; }
-	string getPassword2() { return password; }
+	string getPassword() { return password; }
 	void setPassword(const char *pWord) { strcpy(password, pWord); }
 };
 
@@ -1152,9 +1151,8 @@ public:
 		// cout<<"\n\nPassword : "<<arr;
 	}
 
-	char *getPartyName() { return partyName; }
-	char *getHeadName() { return headName; }
-	string getPartyName2() { return partyName; }
+	string getPartyName() const { return partyName; }
+	string getHeadName() const { return headName; }
 
 	int getPartyId() { return PartyID; }
 	int getVotes() { return votes; }
@@ -1300,8 +1298,8 @@ public:
 			goto redo3;
 		}
 		setPartyId(ps1[sr - 1].getPartyId());
-		setPartyName(ps1[sr - 1].getPartyName());
-		setHeadName(ps1[sr - 1].getHeadName());
+		setPartyName(ps1[sr - 1].getPartyName().c_str());
+		setHeadName(ps1[sr - 1].getHeadName().c_str());
 		int m = ps1[sr - 1].getMembers();
 		ps1[sr - 1].setMembers(m + 1);
 		SetPartyIdNo();
@@ -1347,9 +1345,8 @@ public:
 		// cout<<"\n\nPassword : "<<arr;
 	}
 
-	char *getCandidateName() { return candidateName; }
 	char *getCandidateDesignation() { return candidatePost; }
-	string getCandidateName2() { return candidateName; }
+	string getCandidateName() const { return candidateName; }
 	int getCandidateID() { return candidateID; }
 	int getSeats() { return seats; }
 	int getCandidateVotes() { return getVotes(); }
@@ -1463,7 +1460,7 @@ int partyLogin()
 	cin >> x;
 	cin.ignore();
 	char paswrd[10], cr;
-	string cmpPaswrd = bs1[x - 1].getPassword2();
+	string cmpPaswrd = bs1[x - 1].getPassword();
 	cout << "\n   Enter Your Password: ";
 	for (int i = 0; i < 10; i++)
 	{
@@ -1520,10 +1517,8 @@ void displayCandidateInfo(Candidate obj)
 	cout << "   " << obj.getCandidateID();
 	for (int i = c; i < 7; i++)
 		cout << " ";
-	c = strlen(obj.getCandidateName());
 	cout << obj.getCandidateName();
-	for (int i = c; i < 25; i++)
-		cout << " ";
+	cout << string(25 - obj.getCandidateName().length(), ' ');
 	cout << obj.getstateName() << string(20 - obj.getstateName().length(), ' ');
 	cout << obj.getcityName() << string(20 - obj.getcityName().length(), ' ');
 	c = countDigits(obj.getVotes());
@@ -1773,7 +1768,7 @@ redo:;
 	}
 
 	char paswrd[10], cr;
-	string cmpPaswrd = bs1[index].getPassword2();
+	string cmpPaswrd = bs1[index].getPassword();
 	cout << "\n   Enter Your Password: ";
 	for (int i = 0; i < 10; i++)
 	{
@@ -2073,9 +2068,8 @@ public:
 		setVoterId();
 	}
 
-	char *getVoterName() { return voterName; }
-	char *getVoterPartyName() { return partyName; }
-	string getVoterName2() { return voterName; }
+	string getVoterPartyName() const { return partyName; }
+	string getVoterName() const { return voterName; }
 	int getVoterID() { return voterID; }
 	int getVoterAge() { return age; }
 	char getVoterGender() { return gender; }
@@ -2195,7 +2189,7 @@ redo:;
 	}
 
 	char paswrd[10], cr;
-	string cmpPaswrd = bs1[index].getPassword2();
+	string cmpPaswrd = bs1[index].getPassword();
 	cout << "\n   Enter Your Password: ";
 	for (int i = 0; i < 10; i++)
 	{
@@ -2241,7 +2235,7 @@ void displayCandidateForVote(Candidate obj)
 	cout << "   " << obj.getCandidateID();
 	for (int i = c; i < 7; i++)
 		cout << " ";
-	cout << obj.getCandidateName() << string(strlen(obj.getCandidateName()), ' ');
+	cout << obj.getCandidateName() << string(25 - obj.getCandidateName().length(), ' ');
 	/*c=strlen(obj.getstateName());
 	cout<<obj.getstateName();
 	for(int i=c;i<20;i++) cout<<" ";
@@ -2290,7 +2284,7 @@ void voterMakeVote(Voter *vs1, int Id)
 		int vote = cs1[selectedId - 1].getCandidateVotes();
 		cs1[selectedId - 1].setCandidateVotes(vote + 1);
 		vs1[Id - 1].setPartyId(cs1[selectedId - 1].getCandidateID());
-		vs1[Id - 1].setPartyName(cs1[selectedId - 1].getPartyName());
+		vs1[Id - 1].setPartyName(cs1[selectedId - 1].getPartyName().c_str());
 		int leadingCandidate = city1[cIndex].getLeadCandidateId();
 		if (leadingCandidate != 0)
 		{
@@ -2662,7 +2656,7 @@ void displayResultRecord(ITNode *root)
 	cout << bs1[RpId - 1].getPartyId();
 	for (int i = c; i < 7; i++)
 		cout << " ";
-	c = strlen(bs1[RpId - 1].getPartyName());
+	c = strlen(bs1[RpId - 1].getPartyName().c_str());
 	cout << bs1[RpId - 1].getPartyName() << string(c, ' ');
 	cout << bs1[RpId - 1].getHeadName() << "\n";
 }
@@ -2700,15 +2694,14 @@ void displayVoterRecord(Voter bs1[], int vId)
 		int c = 0;
 		c = countDigits(bs1[i].getVoterID());
 		cout << "   " << bs1[i].getVoterID();
-		cout << string(7, ' ');
-		c = strlen(bs1[i].getVoterName());
-		cout << bs1[i].getVoterName() << string(c, ' ');
+		cout << string(7 - c, ' ');
+		cout << bs1[i].getVoterName() << string(20 - bs1[i].getVoterName().length(), ' ');
 		c = countDigits(bs1[i].getVoterAge());
 		cout << bs1[i].getVoterAge();
-		cout << string(7, ' ');
+		cout << string(7 - c, ' ');
 
 		cout << bs1[i].getVoterGender();
-		cout << string(7, ' ');
+		cout << string(6, ' ');
 
 		cout << bs1[i].getstateName();
 		cout << std::string(15 - bs1[i].getstateName().length(), ' ');
@@ -2801,11 +2794,9 @@ void displayCandidateRecord(Candidate bs1[], int cId)
 		cout << "   " << bs1[i].getCandidateID();
 		for (int i = c; i < 7; i++)
 			cout << " ";
-		c = strlen(bs1[i].getCandidateName());
 		cout << bs1[i].getCandidateName();
-		for (int i = c; i < 25; i++)
-			cout << " ";
-		c = strlen(bs1[i].getPartyName());
+		cout << string(25 - bs1[i].getCandidateName().length(), ' ');
+		c = strlen(bs1[i].getPartyName().c_str());
 		cout << bs1[i].getPartyName();
 		for (int i = c; i < 30; i++)
 			cout << " ";
@@ -2880,8 +2871,8 @@ redo:;
 					}
 					else if (!k)
 					{
-						string objParty = obj.getPartyName2();
-						string cmpParty = bs2[j - 1].getPartyName2();
+						string objParty = obj.getPartyName();
+						string cmpParty = bs2[j - 1].getPartyName();
 						int k = cmpParty.compare(objParty);
 						if (k < 0)
 						{
@@ -2914,11 +2905,11 @@ redo:;
 		for (int i = 0; i < candidateId; i++)
 		{
 			obj = bs1[i];
-			string objParty = obj.getPartyName2();
+			string objParty = obj.getPartyName();
 			int j;
 			for (j = id; j > 0; j--)
 			{
-				string cmpParty = bs2[j - 1].getPartyName2();
+				string cmpParty = bs2[j - 1].getPartyName();
 				int k = cmpParty.compare(objParty);
 				if (k < 0)
 				{
@@ -2989,14 +2980,10 @@ void viewPartyRecord()
 		cout << "   " << bs1[i].getPartyId();
 		for (int i = c; i < 7; i++)
 			cout << " ";
-		c = strlen(bs1[i].getPartyName());
 		cout << bs1[i].getPartyName();
-		for (int i = c; i < 30; i++)
-			cout << " ";
-		c = strlen(bs1[i].getHeadName());
+		cout << string(30 - bs1[i].getPartyName().length(), ' ');
 		cout << bs1[i].getHeadName();
-		for (int i = c; i < 20; i++)
-			cout << " ";
+		cout << string(20 - bs1[i].getHeadName().length(), ' ');
 		cout << bs1[i].getMembers() << "\n";
 	}
 
@@ -3134,11 +3121,11 @@ redo:;
 	for (int j = 0; j < partyId; j++)
 	{
 		int c = 0;
-		c = strlen(p1[j].getPartyName());
+		c = strlen(p1[j].getPartyName().c_str());
 		cout << "   " << p1[j].getPartyName();
 		for (int k = c; k < 30; k++)
 			cout << " ";
-		c = strlen(p1[j].getHeadName());
+		c = strlen(p1[j].getHeadName().c_str());
 		cout << p1[j].getHeadName();
 		for (int k = c; k < 25; k++)
 			cout << " ";
@@ -3254,14 +3241,10 @@ redo2:;
 		if (f == 1)
 		{
 			int c = 0;
-			c = strlen(p1[j].getPartyName());
 			cout << "   " << p1[j].getPartyName();
-			for (int k = c; k < 30; k++)
-				cout << " ";
-			c = strlen(p1[j].getHeadName());
+			cout << string(30 - p1[j].getPartyName().length(), ' ');
 			cout << p1[j].getHeadName();
-			for (int k = c; k < 25; k++)
-				cout << " ";
+			cout << string(25 - p1[j].getHeadName().length(), ' ');
 			c = countDigits(p1[j].getVotes());
 			cout << p1[j].getVotes();
 			for (int k = c; k < 10; k++)
@@ -3340,18 +3323,12 @@ redo2:;
 		if (c1[i].getcityId() == cs1[sr2 - 1].getcityId())
 		{
 			int c = 0;
-			c = strlen(c1[i].getPartyName());
 			cout << "   " << c1[i].getPartyName();
-			for (int i = c; i < 30; i++)
-				cout << " ";
-			c = strlen(c1[i].getHeadName());
+			cout << string(30 - c1[i].getPartyName().length(), ' ');
 			cout << c1[i].getHeadName();
-			for (int i = c; i < 25; i++)
-				cout << " ";
-			c = strlen(c1[i].getCandidateName());
+			cout << string(25 - c1[i].getHeadName().length(), ' ');
 			cout << c1[i].getCandidateName();
-			for (int i = c; i < 25; i++)
-				cout << " ";
+			cout << string(c1[i].getCandidateName().length(), ' ');
 			c = countDigits(c1[i].getCandidateVotes());
 			cout << c1[i].getCandidateVotes();
 			for (int i = c; i < 10; i++)
