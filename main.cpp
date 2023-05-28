@@ -361,7 +361,7 @@ public:
 	std::string getstateName() const { return stateName; }
 	void setstateName(const char *sName) { strcpy(stateName, sName); }
 
-	int storeState();
+	void storeState();
 	int getStates(int x);
 };
 
@@ -384,7 +384,7 @@ int State::getStates(int x)
 	}
 }
 
-int State::storeState()
+void State::storeState()
 {
 	ofstream foutState;
 	foutState.open("States.txt", ios::app | ios::binary);
@@ -816,7 +816,7 @@ public:
 
 	void setCityId(int n) { cityId = n; }
 	void setcityName(const char *name) { strcpy(cityName, name); }
-	int storeCity();
+	void storeCity();
 	int getCity(int x);
 	void setLeadCandidateId(int n) { LeadcandidateId = n; }
 };
@@ -840,7 +840,7 @@ int City::getCity(int x)
 	}
 }
 
-int City::storeCity()
+void City::storeCity()
 {
 	ofstream foutCity;
 	foutCity.open("Cities.txt", ios::app | ios::binary);
@@ -1180,7 +1180,7 @@ public:
 	void setMembers(int n) { Members = n; }
 	void setSeats(int n) { seats = n; }
 
-	int storeParty();
+	void storeParty();
 	int getParty(int x);
 };
 
@@ -1370,7 +1370,7 @@ public:
 	void setCandidatePost(const char *newPost) { strcpy(candidatePost, newPost); }
 	void setSeats(int n) { seats = n; }
 
-	int storeCandidate();
+	void storeCandidate();
 	int getCandidate(int x);
 };
 
@@ -1393,7 +1393,7 @@ int Party::getParty(int x)
 	}
 }
 
-int Party::storeParty()
+void Party::storeParty()
 {
 	ofstream foutParty;
 	foutParty.open("Party.txt", ios::app | ios::binary);
@@ -1406,14 +1406,6 @@ int funPartyInput(Party *bs1, int x)
 	Party obj;
 	std::cout << "   ";
 	obj.getPartyInfo();
-	/*std::string objName = obj.getPartyName2();
-	int j;
-	for(j = partyCount-1;j>0;j--){
-	   std::string cmpName = bs1[j-1].getPartyName2();
-	   int k = std::stringCmp(cmpName,objName);
-	   if(k==0){bs1[j] = bs1[j-1];}
-	   else{break;}
-	}*/
 	bs1[partyId - 1] = obj;
 
 	return obj.getPartyId();
@@ -1421,30 +1413,15 @@ int funPartyInput(Party *bs1, int x)
 
 int insertNewParty()
 {
-	int x = 1, Id = 0;
+	int Id = 0;
 	GetPartyIdNo();
-	// std::cout<<"\n   Enter the No. of State's you want to Insert: ";
-	// std::cin>>x;std::cin.ignore();
-	if (x == 0)
-	{
-		return Id;
-	}
-	Party bs1[partyId + x];
-
 	funHeading("Inserting Party Record: \n");
-	for (int i = 0; i < partyId; i++)
-	{
-		bs1[i].getParty(i);
-	}
-	Id = funPartyInput(bs1, x);
+	Party obj;
+	obj.getPartyInfo();
+	Id = obj.getPartyId();
 	SetPartyIdNo();
-	remove("Party.txt");
-	for (int i = 0; i < partyId; i++)
-	{
-		bs1[i].storeParty();
-	}
+	obj.storeParty();
 	std::cout << "\n\n   Record Inserted\n\n   Press any Key To Insert The Record";
-	std::cin.ignore();
 	std::cin.get();
 
 	return Id;
@@ -1691,7 +1668,7 @@ int Candidate::getCandidate(int x)
 	}
 }
 
-int Candidate::storeCandidate()
+void Candidate::storeCandidate()
 {
 	ofstream foutCandidate;
 	foutCandidate.open("candidates.txt", ios::app | ios::binary);
@@ -2096,7 +2073,7 @@ public:
 	void setPartyName(const char *newParty) { strcpy(partyName, newParty); }
 	void setPartyId(int n) { partyId = n; }
 	void setAge(int n) { age = n; }
-	int storeVoter();
+	void storeVoter();
 	int getVoter(int x);
 };
 
@@ -2119,7 +2096,7 @@ int Voter::getVoter(int x)
 	}
 }
 
-int Voter::storeVoter()
+void Voter::storeVoter()
 {
 	ofstream foutVoter;
 	foutVoter.open("voter.txt", ios::app | ios::binary);
@@ -2544,7 +2521,7 @@ public:
 	void setHigh(int h) { high = h; }
 	void setpId(int p) { PID = p; }
 
-	int storeInterval();
+	void storeInterval();
 	int getInterval(int x);
 };
 
@@ -2567,7 +2544,7 @@ int Interval::getInterval(int x)
 	}
 }
 
-int Interval::storeInterval()
+void Interval::storeInterval()
 {
 	ofstream foutInterval;
 	foutInterval.open("Record.txt", ios::app | ios::binary);
@@ -3385,181 +3362,202 @@ void showResults()
 	}
 }
 
+void CreateAccount()
+{
+	int ch, Id;
+	do
+	{
+		ch = choiceAdmin(5);
+		switch (ch)
+		{
+		case 1:
+			Id = insertNewVoter();
+			if (Id != 0)
+			{
+				viewVoterInfo(Id);
+			}
+			break;
+		case 2:
+			Id = insertNewCandidate();
+			if (Id != 0)
+			{
+				viewCandidateInfo(Id);
+			}
+			break;
+		case 3:
+			Id = insertNewParty();
+			if (Id != 0)
+			{
+				viewPartyInfo(Id);
+			}
+			break;
+		case 0:
+			break;
+		default:
+			std::cout << "\n   Enter the Correct Choice!";
+			break;
+		}
+	} while (ch != 0);
+}
+
+void AlterState()
+{
+	int ch;
+	do
+	{
+		ch = choiceAdmin(3);
+		switch (ch)
+		{
+		case 0:
+			break;
+		case 1:
+			insertNewState();
+			break;
+		case 2:
+			viewStateRecord();
+			break;
+		case 3:
+			deleteState();
+			break;
+		case 4:
+			updateState();
+			break;
+		default:
+			std::cout << "\n   Enter the Correct Choice!";
+			break;
+		}
+	} while (ch != 0);
+}
+
+void AlterCity()
+{
+	int ch;
+	do
+	{
+		ch = choiceAdmin(4);
+		switch (ch)
+		{
+		case 0:
+			break;
+		case 1:
+			insertNewCity();
+			break;
+		case 2:
+			viewCityRecord();
+			break;
+		case 3:
+			deleteCity();
+			break;
+		case 4:
+			updateCity();
+			break;
+		default:
+			std::cout << "\n   Enter the Correct Choice!";
+			break;
+		}
+	} while (ch != 0);
+}
+
+void MaintainRecords()
+{
+	int ch;
+	do
+	{
+		ch = choiceAdmin(1);
+		switch (ch)
+		{
+		case 1:
+			viewVoterRecord();
+			break;
+		case 2:
+			viewCandidateRecord();
+			break;
+		case 3:
+			viewPartyRecord();
+			break;
+		case 4:
+			ResetVotes();
+			break;
+
+		default:
+			std::cout << "\n   Enter the Correct Choice!";
+			break;
+		}
+	} while (ch != 0);
+}
+
 int main()
 {
-	// setCityLeadCandidate();
 	funFrontPage();
 	int ch, Id = 0;
-
-choice:;
-	ch = choiceAdmin(0);
-	switch (ch - 1)
+	do
 	{
-	case 0:
-		Id = VoterLogin();
-		if (Id != 0)
+		ch = choiceAdmin(0);
+		switch (ch)
 		{
-			viewVoterInfo(Id);
-		}
-		goto choice;
-	case 1:
-		Id = CandidateLogin();
-		if (Id != 0)
+		case 1:
+			Id = VoterLogin();
+			if (Id != 0)
+			{
+				viewVoterInfo(Id);
+			}
+			break;
+		case 2:
+			Id = CandidateLogin();
+			if (Id != 0)
+			{
+				viewCandidateInfo(Id);
+			}
+			break;
+		case 3:
+			Id = partyLogin();
+			if (Id != 0)
+			{
+				viewPartyInfo(Id);
+			}
+			break;
+		case 4:
+			CreateAccount();
+			break;
+		case 5:
+			showResults();
+			break;
+		case 6:
 		{
-			viewCandidateInfo(Id);
+			int ch;
+			do
+			{
+				ch = choiceAdmin(2);
+				switch (ch)
+				{
+				case 0:
+					break;
+				case 1:
+					AlterState();
+					break;
+				case 2:
+					AlterCity();
+					break;
+				case 3:
+					MaintainRecords();
+					break;
+				case 4:
+					setResultRecord();
+					break;
+					;
+				default:
+					std::cout << "\n   Enter the Correct Choice!";
+					break;
+				}
+			} while (ch != 0);
 		}
-		goto choice;
-	case 2:
-		Id = partyLogin();
-		if (Id != 0)
-		{
-			viewPartyInfo(Id);
+		case 7:
+			break;
+		default:
+			std::cout << "\n   Enter the Correct Choice!";
+			break;
 		}
-		goto choice;
-	case 3:
-		goto choice3;
-	case 4:
-		showResults();
-		goto choice;
-	case 5:
-		goto choice5;
-	case 6:
-		goto Exit;
-	default:
-		std::cout << "\n   Enter the Correct Choice!";
+	} while (ch != 6);
 
-		goto choice;
-	}
-
-choice3:;
-	ch = choiceAdmin(5);
-	switch (ch)
-	{
-	case 1:
-		Id = insertNewVoter();
-		if (Id != 0)
-		{
-			viewVoterInfo(Id);
-		}
-		goto choice;
-	case 2:
-		Id = insertNewCandidate();
-		if (Id != 0)
-		{
-			viewCandidateInfo(Id);
-		}
-		goto choice;
-	case 3:
-		Id = insertNewParty();
-		if (Id != 0)
-		{
-			viewPartyInfo(Id);
-		}
-		goto choice;
-	case 0:
-		goto choice;
-	default:
-		std::cout << "\n   Enter the Correct Choice!";
-
-		goto choice;
-	}
-
-	// choice4:;
-	// goto Exit;
-
-choice5:;
-	ch = choiceAdmin(2);
-	switch (ch)
-	{
-	case 1:
-		goto choice5a;
-	case 2:
-		goto choice5b;
-	case 3:
-		goto choice5c;
-	case 4:
-		setResultRecord();
-		goto choice5;
-	case 0:
-		goto choice;
-	default:
-		std::cout << "\n   Enter the Correct Choice!";
-
-		goto choice5;
-	}
-
-choice5a:;
-	ch = choiceAdmin(3);
-	switch (ch)
-	{
-	case 1:
-		insertNewState();
-		goto choice5a;
-	case 2:
-		viewStateRecord();
-		goto choice5a;
-	case 3:
-		deleteState();
-		goto choice5a;
-	case 4:
-		updateState();
-		goto choice5a;
-	case 0:
-		goto choice5;
-	default:
-		std::cout << "\n   Enter the Correct Choice!";
-
-		goto choice5a;
-	}
-
-choice5b:;
-	ch = choiceAdmin(4);
-	switch (ch)
-	{
-	case 1:
-		insertNewCity();
-		goto choice5b;
-	case 2:
-		viewCityRecord();
-		goto choice5b;
-	case 3:
-		deleteCity();
-		goto choice5b;
-	case 4:
-		updateCity();
-		goto choice5b;
-	case 0:
-		goto choice5;
-	default:
-		std::cout << "\n   Enter the Correct Choice!";
-
-		goto choice5b;
-	}
-
-choice5c:;
-	ch = choiceAdmin(1);
-	switch (ch)
-	{
-	case 1:
-		viewVoterRecord();
-		goto choice5c;
-	case 2:
-		viewCandidateRecord();
-		goto choice5c;
-	case 3:
-		viewPartyRecord();
-		goto choice5c;
-	case 4:
-		ResetVotes();
-		goto choice5c;
-	case 0:
-		goto choice5;
-	default:
-		std::cout << "\n   Enter the Correct Choice!";
-
-		goto choice5c;
-	}
-
-Exit:;
 	return 0;
 }
