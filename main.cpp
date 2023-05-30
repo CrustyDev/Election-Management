@@ -135,14 +135,6 @@ void SetCityCount()
 	foutCityCount.close();
 }
 
-/*void setPartyCount(){
-   ofstream foutPartyCount;
-   foutPartyCount.open("partyCount.txt");
-   foutPartyCount<<partyCount;
-   foutPartyCount.close();
-
-}*/
-
 void SetStateIdNo()
 {
 	ofstream foutStateIdNo;
@@ -362,14 +354,14 @@ public:
 	void setstateName(const char *sName) { strcpy(stateName, sName); }
 
 	void storeState();
-	int getStates(int x);
+	void getStates(int x);
 };
 
-int State::getStates(int x)
+void State::getStates(int x)
 {
 	int i = 0;
 	ifstream finStateRecord;
-	finStateRecord.open("States.txt", ios::in | ios::binary);
+	finStateRecord.open("States.bin", ios::in | ios::binary);
 	if (!finStateRecord)
 	{
 		std::cout << "\n   File not Found";
@@ -378,7 +370,7 @@ int State::getStates(int x)
 	{
 		while (!finStateRecord.eof() && i != x + 1)
 		{
-			finStateRecord.read((char *)this, sizeof(*this));
+			finStateRecord.read(reinterpret_cast<char *>(this), sizeof(*this));
 			i++;
 		}
 	}
@@ -387,7 +379,7 @@ int State::getStates(int x)
 void State::storeState()
 {
 	ofstream foutState;
-	foutState.open("States.txt", ios::app | ios::binary);
+	foutState.open("States.bin", ios::app | ios::binary);
 	foutState.write((char *)this, sizeof(*this));
 	foutState.close();
 }
@@ -395,9 +387,9 @@ void State::storeState()
 void funStateInput(State *bs1, int x)
 {
 	int y = x + stateCount;
-	State obj;
 	for (int i = stateCount, k = 0; i < y; i++, k++)
 	{
+		State obj;
 		if (x > 1)
 		{
 			std::cout << "\n   Enter State " << k + 1 << "\n";
@@ -409,21 +401,21 @@ void funStateInput(State *bs1, int x)
 		std::cout << "   ";
 		obj.getStateInfo();
 		std::string objName = obj.getstateName();
-		int j;
-		for (j = stateCount - 1; j > 0; j--)
+		for (int j = stateCount; j > 0; j--)
 		{
 			std::string cmpName = bs1[j - 1].getstateName();
 			int k = cmpName.compare(objName);
-			if (k < 0)
+			if (!k)
 			{
-				bs1[j] = bs1[j - 1];
-			}
-			else
-			{
-				break;
+				GetStateIdNo();
+				stateIdNo--;
+				SetStateIdNo();
+				stateCount--;
+				return;
 			}
 		}
-		bs1[j] = obj;
+		obj.storeState();
+		bs1[stateCount - 1] = obj;
 	}
 }
 
@@ -438,7 +430,7 @@ void insertNewState()
 	{
 		return;
 	}
-	State bs1[stateCount + x];
+	State *bs1 = new State[stateCount + x];
 	funHeading("Inserting State's Record: ");
 	std::cout << std::endl
 			  << "   S.No.  StateName\n\n";
@@ -453,12 +445,10 @@ void insertNewState()
 	}
 	funStateInput(bs1, x);
 	SetStateCount();
-	remove("States.txt");
-	for (int i = 0; i < stateCount; i++)
-	{
-		bs1[i].storeState();
-	}
 	std::cout << "\n\n   Record Inserted\n\n   Press any Key To Update The Record";
+	std::cin.ignore();
+	std::cin.get();
+	delete[] bs1;
 }
 
 int inputDeleteChoices()
@@ -571,7 +561,7 @@ void deleteState()
 		if (ch == 3)
 		{
 			SetStateCount();
-			remove("States.txt");
+			remove("States.bin");
 			for (int i = 0; i < stateCount; i++)
 			{
 				bs1[i].storeState();
@@ -731,7 +721,7 @@ void updateState()
 		if (ch == 3)
 		{
 			SetStateCount();
-			remove("States.txt");
+			remove("States.bin");
 			for (int i = 0; i < stateCount; i++)
 			{
 				bs1[i].storeState();
@@ -750,19 +740,18 @@ void viewStateRecord()
 		std::cout << "\n   No Record Found";
 		return;
 	}
-	State bs1[stateCount];
 	std::cout << std::endl
 			  << "   S.No.  StateName    Seats\n\n";
 	for (int i = 0; i < stateCount; i++)
 	{
-		bs1[i].getStates(i);
+		State obj;
+		obj.getStates(i);
 		std::cout << "   " << i + 1 << ".";
 		int j = countDigits(i + 1);
-		for (int k = j; k < 8; k++)
-			std::cout << " ";
-		std::cout << bs1[i].getstateName();
-		std::cout << std::string(14 - bs1[i].getstateName().length(), ' ');
-		std::cout << bs1[i].getSeats() << std::endl;
+		std::cout << std::string(8 - j, ' ');
+		std::cout << obj.getstateName();
+		std::cout << std::string(14 - obj.getstateName().length(), ' ');
+		std::cout << obj.getSeats() << std::endl;
 	}
 	std::cin.ignore();
 	std::cin.get();
@@ -951,7 +940,7 @@ void insertNewCity()
 	seatsCount = seatsCount + bs1[st - 1].getSeats();
 	bs1[st - 1].setSeats(seatsCount);
 	SetCityCount();
-	remove("States.txt");
+	remove("States.bin");
 	for (int i = 0; i < stateCount; i++)
 	{
 		bs1[i].storeState();
@@ -1032,7 +1021,7 @@ void deleteCity()
 	}
 	else if (ch==3){
 	   setStateCount();
-	   remove("States.txt");
+	   remove("States.bin");
 	   for(int i=0;i<stateCount;i++){bs1[i].storeState();}
 	   return;
 	}
@@ -1096,26 +1085,11 @@ void viewCityRecord()
    std::cout<<"\n\n   Record Inserted\n\n   Press any Key To Update The Record";
 
 }*/
-class Password
-{
-private:
-	char password[10];
-
-public:
-	Password()
-	{
-		strcpy(password, "1234");
-	}
-
-	std::string getPassword() { return password; }
-	void setPassword(const char *pWord) { strcpy(password, pWord); }
-};
-
-class Party : public Password
+class Party
 {
 private:
 	int PartyID, votes, Members, seats;
-	char partyName[50], headName[25];
+	char partyName[50], headName[25], password[10];
 
 public:
 	Party()
@@ -1172,6 +1146,7 @@ public:
 	int getVotes() { return votes; }
 	int getMembers() { return Members; }
 	int getSeats() { return seats; }
+	std::string getPassword() const { return password; }
 
 	void setPartyName(const char *newName) { strcpy(partyName, newName); }
 	void setHeadName(const char *newName) { strcpy(headName, newName); }
@@ -1179,6 +1154,7 @@ public:
 	void setPartyId(int n) { PartyID = n; }
 	void setMembers(int n) { Members = n; }
 	void setSeats(int n) { seats = n; }
+	void setPassword(const char *password) { strcpy(this->password, password); }
 
 	void storeParty();
 	int getParty(int x);
@@ -1337,24 +1313,19 @@ public:
 		seats = 0;
 		setLeadCandidateId(0);
 
-		char arr[10], cr;
-		std::cout << "\n   Enter the Password : ";
-		for (int i = 0; i < 10; i++)
+		std::cout << "\n   Enter Your Password: ";
+		std::string password;
+		do
 		{
-			cr = getchar();
-			if (cr != '\r')
+			// std::cin.ignore();
+			std::getline(std::cin >> std::ws, password);
+			if (password.length() > 10)
 			{
-				std::cout << "*";
-				arr[i] = cr;
+				std::cout << "Password length cannot be more than 10." << std::endl;
+				std::cout << "Press Any key to retry." << std::endl;
 			}
-
-			else
-			{
-				arr[i] = '\0';
-				setPassword(arr);
-				break;
-			}
-		}
+		} while (password.length() > 10);
+		setPassword(password.c_str());
 
 		// std::cout<<"\n\nPassword : "<<arr;
 	}
@@ -1455,23 +1426,19 @@ int partyLogin()
 	char paswrd[10], cr;
 	std::string cmpPaswrd = bs1[x - 1].getPassword();
 	std::cout << "\n   Enter Your Password: ";
-	for (int i = 0; i < 10; i++)
+	std::string password;
+	do
 	{
-		cr = getchar();
-		if (cr != '\r')
+		// std::cin.ignore();
+		std::getline(std::cin >> std::ws, password);
+		if (password.length() > 10)
 		{
-			paswrd[i] = cr;
-			std::cout << "*";
+			std::cout << "Password length cannot be more than 10." << std::endl;
+			std::cout << "Press Any key to retry." << std::endl;
 		}
-		else
-		{
-			paswrd[i] = '\0';
-			break;
-		}
-	}
-	// std::cout<<"\n\nPassword : "<<paswrd;
-	// std::cout<<"\n\nCmpPassword : "<<cmpPaswrd;
-	int match = strcmp(paswrd, cmpPaswrd.c_str());
+	} while (password.length() > 10);
+
+	int match = password.compare(cmpPaswrd);
 	if (!match)
 	{
 		return bs1[x - 1].getPartyId();
@@ -1931,11 +1898,11 @@ choice2:;
 	goto redo;
 }
 
-class Voter : public Password, public City
+class Voter : public City
 {
 private:
 	int voterID, partyId, age;
-	char voterName[25], partyName[50], gender;
+	char voterName[25], partyName[50], gender, password[10];
 
 public:
 	Voter()
@@ -2068,11 +2035,14 @@ public:
 	int getVoterAge() { return age; }
 	char getVoterGender() { return gender; }
 	int getVoterPartyId() { return partyId; }
+	std::string getPassword() { return password; }
 
 	void setVoterName(const char *newName) { strcpy(voterName, newName); }
 	void setPartyName(const char *newParty) { strcpy(partyName, newParty); }
 	void setPartyId(int n) { partyId = n; }
 	void setAge(int n) { age = n; }
+	void setPassword(const char *password) { strcpy(this->password, password); }
+
 	void storeVoter();
 	int getVoter(int x);
 };
@@ -2593,7 +2563,6 @@ bool doOVerlap(Interval i1, Interval i2)
 	return false;
 }
 
-// segment start
 void build(int ind, int low, int high)
 {
 	if (low == high)
@@ -2712,10 +2681,7 @@ void displayVoterRecord(Voter bs1[], int vId)
 		std::cout << bs1[i].getcityName();
 		std::cout << std::string(15 - bs1[i].getcityName().length(), ' ');
 		c = bs1[i].getVoterPartyId();
-		if (c == 0)
-			std::cout << "0\n";
-		else
-			std::cout << "1\n";
+		std::cout << (c ? "1" : "0") << std::endl;
 	}
 }
 
@@ -3233,7 +3199,7 @@ void showResult3()
 redo:;
 	funHeading("Showing result for a Specific District : ");
 	GetStateCount();
-	State bs1[stateCount];
+	State bs1[stateCount]; // FIXME: try to cache this
 	std::cout << std::endl
 			  << "   S.No.  State\n\n";
 	for (int i = 0; i < stateCount; i++)
@@ -3241,8 +3207,7 @@ redo:;
 		bs1[i].getStates(i);
 		std::cout << "   " << i + 1 << ".";
 		int j = countDigits(i + 1);
-		for (int k = j; k < 8; k++)
-			std::cout << " ";
+		std::cout << std::string(j - 8, ' ');
 		bs1[i].showStateInfo();
 	}
 	int sr;
@@ -3372,21 +3337,21 @@ void CreateAccount()
 		{
 		case 1:
 			Id = insertNewVoter();
-			if (Id != 0)
+			if (Id)
 			{
 				viewVoterInfo(Id);
 			}
 			break;
 		case 2:
 			Id = insertNewCandidate();
-			if (Id != 0)
+			if (Id)
 			{
 				viewCandidateInfo(Id);
 			}
 			break;
 		case 3:
 			Id = insertNewParty();
-			if (Id != 0)
+			if (Id)
 			{
 				viewPartyInfo(Id);
 			}
@@ -3397,7 +3362,7 @@ void CreateAccount()
 			std::cout << "\n   Enter the Correct Choice!";
 			break;
 		}
-	} while (ch != 0);
+	} while (ch);
 }
 
 void AlterState()
@@ -3426,7 +3391,7 @@ void AlterState()
 			std::cout << "\n   Enter the Correct Choice!";
 			break;
 		}
-	} while (ch != 0);
+	} while (ch);
 }
 
 void AlterCity()
@@ -3455,7 +3420,7 @@ void AlterCity()
 			std::cout << "\n   Enter the Correct Choice!";
 			break;
 		}
-	} while (ch != 0);
+	} while (ch);
 }
 
 void MaintainRecords()
@@ -3483,7 +3448,7 @@ void MaintainRecords()
 			std::cout << "\n   Enter the Correct Choice!";
 			break;
 		}
-	} while (ch != 0);
+	} while (ch);
 }
 
 int main()
@@ -3497,21 +3462,21 @@ int main()
 		{
 		case 1:
 			Id = VoterLogin();
-			if (Id != 0)
+			if (Id)
 			{
 				viewVoterInfo(Id);
 			}
 			break;
 		case 2:
 			Id = CandidateLogin();
-			if (Id != 0)
+			if (Id)
 			{
 				viewCandidateInfo(Id);
 			}
 			break;
 		case 3:
 			Id = partyLogin();
-			if (Id != 0)
+			if (Id)
 			{
 				viewPartyInfo(Id);
 			}
