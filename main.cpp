@@ -1120,22 +1120,18 @@ public:
 		std::cin.getline(headName, 24);
 		char arr[10], cr;
 		std::cout << "\n   Enter the Password : ";
-		for (int i = 0; i < 10; i++)
+		std::string password;
+		do
 		{
-			cr = getchar();
-			if (cr != '\r')
+			// std::cin.ignore();
+			std::getline(std::cin >> std::ws, password);
+			if (password.length() > 10)
 			{
-				std::cout << "*";
-				arr[i] = cr;
+				std::cout << "Password length cannot be more than 10." << std::endl;
+				std::cout << "Press Any key to retry." << std::endl;
 			}
-
-			else
-			{
-				arr[i] = '\0';
-				setPassword(arr);
-				break;
-			}
-		}
+		} while (password.length() > 10);
+		setPassword(password.c_str());
 		// std::cout<<"\n\nPassword : "<<arr;
 	}
 
@@ -1933,70 +1929,73 @@ public:
 		std::cout << "\n   Enter Your Gender(M/F)     :  ";
 		std::cin >> gender;
 
-	redo1:;
-		funHeading("Creating Voter Account : ");
-		std::cout << "\n\n   Your Id : " << voterID;
-		std::cout << "\n\n   Enter Your Name            :  " << voterName;
-		std::cout << "\n\n   Enter Your Age             :  " << age;
-		std::cout << "\n\n   Enter Your Gender(M/F)     :  " << gender << "\n\n";
-		GetStateCount();
-		State bs1[stateCount];
-		std::cout << std::endl
-				  << "   S.No.  State\n\n";
-		for (int i = 0; i < stateCount; i++)
-		{
-			bs1[i].getStates(i);
-			std::cout << "   " << i + 1 << ".";
-			int j = countDigits(i + 1);
-			for (int k = j; k < 8; k++)
-				std::cout << " ";
-			bs1[i].showStateInfo();
-		}
 		int sr;
-		std::cout << "\n   Choose Your State (S.No) : ";
-		std::cin >> sr;
-		if (sr <= 0 || sr > stateCount)
+		State bs1[stateCount];
+		do
 		{
-			std::cout << "\n   Invalid Choice!";
-			goto redo1;
-		}
-		setstateId(bs1[sr - 1].getstateId());
-		setstateName(bs1[sr - 1].getstateName().c_str());
-
-	redo2:;
-		funHeading("Creating Voter Account : ");
-		std::cout << "\n\n   Your Id : " << voterID;
-		std::cout << "\n\n   Enter Your Name            :  " << voterName;
-		std::cout << "\n\n   Enter Your Age             :  " << age;
-		std::cout << "\n\n   Enter Your Gender(M/F)     :  " << gender;
-		std::cout << "\n\n   Select Your State          :  " << getstateName() << "\n\n";
-		GetCityCount();
-		City cs1[cityCount];
-		std::cout << std::endl
-				  << "   S.No.  City\n\n";
-		for (int i = 0; i < cityCount; i++)
-		{
-			cs1[i].getCity(i);
-			if (cs1[i].getstateId() == getstateId())
+			funHeading("Creating Voter Account : ");
+			std::cout << "\n\n   Your Id : " << voterID;
+			std::cout << "\n\n   Enter Your Name            :  " << voterName;
+			std::cout << "\n\n   Enter Your Age             :  " << age;
+			std::cout << "\n\n   Enter Your Gender(M/F)     :  " << gender << "\n\n";
+			GetStateCount();
+			std::cout << std::endl
+					  << "   S.No.  State\n\n";
+			for (int i = 0; i < stateCount; i++)
 			{
+				bs1[i].getStates(i);
 				std::cout << "   " << i + 1 << ".";
 				int j = countDigits(i + 1);
 				for (int k = j; k < 8; k++)
 					std::cout << " ";
-				cs1[i].showCityInfo();
+				bs1[i].showStateInfo();
 			}
-		}
-		std::cout << "\n   Choose Your City (S.No) : ";
-		std::cin >> sr;
-		if (sr <= 0 || sr > cityCount)
+			std::cout << "\n   Choose Your State (S.No) : ";
+			std::cin >> sr;
+			if (sr <= 0 || sr > stateCount)
+			{
+				std::cout << "\n   Invalid Choice!";
+			}
+		} while (sr <= 0 || sr > stateCount);
+		
+		setstateId(bs1[sr - 1].getstateId());
+		setstateName(bs1[sr - 1].getstateName().c_str());
+
+		City cs1[cityCount];
+		do
 		{
-			std::cout << "\n   Invalid Choice!";
-			goto redo2;
-		}
+			funHeading("Creating Voter Account : ");
+			std::cout << "\n\n   Your Id : " << voterID;
+			std::cout << "\n\n   Enter Your Name            :  " << voterName;
+			std::cout << "\n\n   Enter Your Age             :  " << age;
+			std::cout << "\n\n   Enter Your Gender(M/F)     :  " << gender;
+			std::cout << "\n\n   Select Your State          :  " << getstateName() << "\n\n";
+			GetCityCount();
+			std::cout << std::endl
+					  << "   S.No.  City\n\n";
+			for (int i = 0; i < cityCount; i++)
+			{
+				cs1[i].getCity(i);
+				if (cs1[i].getstateId() == getstateId())
+				{
+					std::cout << "   " << i + 1 << ".";
+					int j = countDigits(i + 1);
+					for (int k = j; k < 8; k++)
+						std::cout << " ";
+					cs1[i].showCityInfo();
+				}
+			}
+			std::cout << "\n   Choose Your City (S.No) : ";
+			std::cin >> sr;
+			if (sr <= 0 || sr > cityCount)
+			{
+				std::cout << "\n   Invalid Choice!";
+			}
+		} while (sr <= 0 || sr > cityCount);
+
 		setCityId(cs1[sr - 1].getcityId());
 		setcityName(cs1[sr - 1].getcityName().c_str());
 
-	redo3:;
 		funHeading("Creating Voter Account : ");
 		std::cout << "\n\n   Your Id : " << voterID;
 		std::cout << "\n\n   Enter Your Name            :  " << voterName;
@@ -2010,22 +2009,18 @@ public:
 		setLeadCandidateId(0);
 		char arr[10], cr;
 		std::cout << "\n   Enter the Password : ";
-		for (int i = 0; i < 10; i++)
+		std::cout << "\n   Enter the Password : ";
+		std::string password;
+		do
 		{
-			cr = getchar();
-			if (cr != '\r')
+			std::getline(std::cin >> std::ws, password);
+			if (password.length() > 10)
 			{
-				std::cout << "*";
-				arr[i] = cr;
+				std::cout << "Password Length cannot be more than 10." << std::endl;
+				std::cout << "Press Any Key to retry." << std::endl;
 			}
-
-			else
-			{
-				arr[i] = '\0';
-				setPassword(arr);
-				break;
-			}
-		}
+		} while (password.length() > 10);
+		setPassword(password.c_str());
 		setVoterId();
 	}
 
