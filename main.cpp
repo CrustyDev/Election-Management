@@ -1775,123 +1775,122 @@ void viewCandidateInfo(int Id)
 		sIndex = i;
 		}*/
 	}
-redo:;
-	obj = bs1[sIndex];
-	funHeading("Welcome : ");
-	std::cout << "\n   PartyName  : " << obj.getPartyName();
-	std::cout << "        Head  : " << obj.getHeadName();
-	std::cout << "\n\n   Name         : " << obj.getCandidateName();
-	std::cout << "\n   Designation  : " << obj.getCandidateDesignation();
-	std::cout << "\n   State        : " << obj.getstateName();
-	std::cout << "\n   City         : " << obj.getcityName();
-	std::cout << "\n   Votes        : " << obj.getVotes();
-	std::cout << "\n   Seats        : " << obj.getSeats();
-choice:;
-	int ch = choiceAdmin(7);
-	switch (ch)
+	while (true)
 	{
-	case 1:
-		goto choice1;
-	case 2:
-		goto choice2;
-	case 0:
-		/*setPartyCount();*/
-		remove("candidates.txt");
-		for (int i = 0; i < candidateId; i++)
-		{
-			bs1[i].storeCandidate();
-		}
-		return;
-	default:
-		std::cout << "\n   Enter the Correct Choice!";
+		obj = bs1[sIndex];
+		funHeading("Welcome : ");
+		std::cout << "\n   PartyName  : " << obj.getPartyName();
+		std::cout << "        Head  : " << obj.getHeadName();
+		std::cout << "\n\n   Name         : " << obj.getCandidateName();
+		std::cout << "\n   Designation  : " << obj.getCandidateDesignation();
+		std::cout << "\n   State        : " << obj.getstateName();
+		std::cout << "\n   City         : " << obj.getcityName();
+		std::cout << "\n   Votes        : " << obj.getVotes();
+		std::cout << "\n   Seats        : " << obj.getSeats();
 
-		goto redo;
-	}
-choice1:;
-	funHeading("List Of Other Members : -");
-	std::cout << "\n   PartyName : " << obj.getPartyName();
-	std::cout << "       Head : " << obj.getHeadName();
+		int ch = choiceAdmin(7);
+		switch (ch)
+		{
+		case 1:
+		{
+			funHeading("List Of Other Members : -");
+			std::cout << "\n   PartyName : " << obj.getPartyName();
+			std::cout << "       Head : " << obj.getHeadName();
 
-	std::cout << "\n\n\n   ID         Name                  State               City            Votes\n";
-	for (int i = 0; i < candidateId; i++)
-	{
-		if (bs1[i].getPartyId() == obj.getPartyId() && bs1[i].getCandidateID() != obj.getCandidateID())
-		{
-			displayCandidateInfo(bs1[i]);
-			std::cout << "\n";
-		}
-	}
-
-	goto redo;
-choice2:;
-	std::cout << "\n\n";
-	int ch3 = inputCandidateUpdateChoice();
-	std::cin.ignore();
-	if (ch3 == 1)
-	{
-		char newName[25];
-		std::cout << "\n   Enter the New HeadName : ";
-		std::cin.getline(newName, 24);
-		int y = confirm();
-		if (y == 1)
-		{
-			bs1[sIndex].setCandidateName(newName);
-			std::cout << "\n\n   Record Has Been Updated\n\n   Press Any Key";
-			std::cin.ignore();
-			std::cin.get();
-		}
-		goto redo;
-	}
-	if (ch3 == 2)
-	{
-		char newPassword[10], cr;
-		std::cout << "\n   Enter the New Password : ";
-		for (int i = 0; i < 10; i++)
-		{
-			cr = getchar();
-			if (cr != '\r')
+			std::cout << "\n\n\n   ID         Name                  State               City            Votes\n";
+			for (int i = 0; i < candidateId; i++)
 			{
-				newPassword[i] = cr;
-				std::cout << "*";
+				if (bs1[i].getPartyId() == obj.getPartyId() && bs1[i].getCandidateID() != obj.getCandidateID())
+				{
+					displayCandidateInfo(bs1[i]);
+					std::cout << "\n";
+				}
+			}
+			break;
+		}
+		case 2:
+		{
+			std::cout << "\n\n";
+			int ch3 = inputCandidateUpdateChoice();
+			std::cin.ignore();
+			if (ch3 == 1)
+			{
+				char newName[25];
+				std::cout << "\n   Enter the New HeadName : ";
+				std::cin.getline(newName, 24);
+				int y = confirm();
+				if (y == 1)
+				{
+					bs1[sIndex].setCandidateName(newName);
+					std::cout << "\n\n   Record Has Been Updated\n\n   Press Any Key";
+					std::cin.ignore();
+					std::cin.get();
+				}
+			}
+			else if (ch3 == 2)
+			{
+				char newPassword[10], cr;
+				std::cout << "\n   Enter the New Password : ";
+				for (int i = 0; i < 10; i++)
+				{
+					cr = getchar();
+					if (cr != '\r')
+					{
+						newPassword[i] = cr;
+						std::cout << "*";
+					}
+					else
+					{
+						newPassword[i] = '\0';
+						break;
+					}
+				}
+				std::cout << "\n";
+				int y = confirm();
+				if (y == 1)
+				{
+					bs1[sIndex].setPassword(newPassword);
+					std::cout << "\n\n   Record Has Been Updated\n\n   Press Any Key";
+					std::cin.ignore();
+					std::cin.get();
+				}
+			}
+			else if (ch3 == 3)
+			{
+				char newDescription[25];
+				std::cout << "\n   Enter the New Description : ";
+				std::cin.getline(newDescription, 24);
+				int y = confirm();
+				if (y == 1)
+				{
+					bs1[sIndex].setCandidatePost(newDescription);
+					std::cout << "\n\n   Record Has Been Updated\n\n   Press Any Key";
+					std::cin.ignore();
+					std::cin.get();
+				}
+			}
+			else if (ch3 == 4)
+			{
+				continue;
 			}
 			else
 			{
-				newPassword[i] = '\0';
-				break;
+				std::cout << "\n   Enter the Correct Choice!";
 			}
+			break;
 		}
-		std::cout << "\n";
-		int y = confirm();
-		if (y == 1)
-		{
-			bs1[sIndex].setPassword(newPassword);
-			std::cout << "\n\n   Record Has Been Updated\n\n   Press Any Key";
-			std::cin.ignore();
-			std::cin.get();
+		case 0:
+			/*setPartyCount();*/
+			remove("candidates.txt");
+			for (int i = 0; i < candidateId; i++)
+			{
+				bs1[i].storeCandidate();
+			}
+			return;
+		default:
+			std::cout << "\n   Enter the Correct Choice!";
 		}
-		goto redo;
 	}
-	if (ch3 == 3)
-	{
-		char newDescription[25];
-		std::cout << "\n   Enter the New Description : ";
-		std::cin.getline(newDescription, 24);
-		int y = confirm();
-		if (y == 1)
-		{
-			bs1[sIndex].setCandidatePost(newDescription);
-			std::cout << "\n\n   Record Has Been Updated\n\n   Press Any Key";
-			std::cin.ignore();
-			std::cin.get();
-		}
-		goto redo;
-	}
-	if (ch3 == 4)
-	{
-		goto redo;
-	}
-	std::cout << "\n   Enter the Correct Choice!";
-	goto redo;
 }
 
 class Voter : public City
@@ -1957,7 +1956,7 @@ public:
 				std::cout << "\n   Invalid Choice!";
 			}
 		} while (sr <= 0 || sr > stateCount);
-		
+
 		setstateId(bs1[sr - 1].getstateId());
 		setstateName(bs1[sr - 1].getstateName().c_str());
 
