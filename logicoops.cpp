@@ -1,5 +1,5 @@
 #include <iostream>
-#include <cstring>
+#include <string>
 #include <vector>
 
 #define MAX 9
@@ -13,7 +13,7 @@ class Candidate {
             return name; 
         }
     private:
-        string name;
+        std::string name;
 };
 
 class ArrPair {
@@ -61,7 +61,7 @@ class Tideman {
 
                 for (int j = 0; j < candidate_count; j++) {
                     cout << "Rank " << j + 1 << ": ";
-                    string name;
+                    std::string name;
                     cin >> name;
 
                     if (!vote(j, name, ranks)) {
@@ -89,7 +89,7 @@ class Tideman {
         vector<ArrPair> arrpairs;
         int arrpair_count;
 
-        bool vote(int rank, const string& name, vector<int>& ranks) {
+        bool vote(int rank, const std::string& name, vector<int>& ranks) {
             for (int i = 0; i < candidate_count; i++) {
                 if (name == candidates[i].getName()) {
                     ranks[rank] = i;
