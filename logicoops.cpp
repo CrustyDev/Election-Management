@@ -183,7 +183,9 @@ class Tideman {
         };
 };
 
-int main(int argc, char* argv[]) {
-    Tideman tideman(argc, argv);
+int main(void) {
+    int seats;
+    char** partycandidaes;
+    Tideman tideman(seats, partycandidaes);
     return 0;
 }
