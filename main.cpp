@@ -555,8 +555,6 @@ void updateState()
 			char cnfm;
 			std::cout << "\n   Are you Sure to Update the Record to " << newName << " (y/n) : ";
 			std::cin >> cnfm;
-			// cnfm =
-			// std::cout<<cnfm;
 			if (cnfm == 'y' || cnfm == 'Y')
 			{
 				for (int i = sr - 1; i < stateCount; i++)
@@ -900,38 +898,23 @@ void viewCityRecord()
 	}
 	City bs1[cityCount];
 	std::cout << std::endl
-			  << "   S.No.  StateName    CityName    Seats\n\n";
+			  << "   S.No.  State Name    CityName    Seats\n\n";
 	char *sName;
 	for (int i = 0; i < cityCount; i++)
 	{
 		bs1[i].getCity(i);
 		std::cout << "   " << i + 1 << ".";
 		int j = countDigits(i + 1);
-		for (int k = j; k < 8; k++)
-			std::cout << " ";
+		std::cout << std::string(6 - j, ' ');
 		std::cout << bs1[i].getstateName();
-		std::cout << std::string(12 - bs1[i].getstateName().length(), ' ');
-		std::cout << bs1[i].getcityName() << std::string(14 - bs1[i].getcityName().length(), ' ');
+		std::cout << std::string(14 - bs1[i].getstateName().length(), ' ');
+		std::cout << bs1[i].getcityName() << std::string(15 - bs1[i].getcityName().length(), ' ');
 		std::cout << bs1[i].getSeats() << std::endl;
-
-		// std::cout<<"   "<<bs1[i].getLeadCandidateId()<<std::endl;
 	}
+	std::cout << "Press ANY Key to contunue.";
+	std::cin.ignore();
+	std::cin.get();
 }
-
-/*void setCityLeadCandidate(){
-   getCityCount();
-   City bs1[cityCount];
-   for(int i=0;i<cityCount;i++){
-	  bs1[i].getCity(i);
-	  bs1[i].setLeadCandidateId(0);
-   }
-
-
-   remove("Cities.txt");
-   for(int i=0;i<cityCount;i++){bs1[i].storeCity();}
-   std::cout<<"\n\n   Record Inserted\n\n   Press any Key To Update The Record";
-
-}*/
 
 int funPartyInput(Party *bs1, int x)
 {
@@ -1099,13 +1082,14 @@ void viewPartyInfo(int Id)
 			std::cout << "\n\n\n   ID         Name                  State               City            Votes\n";
 			for (int i = 0; i < candidateId; i++)
 			{
-				// cs1[i].getCandidate(i);
 				if (cs1[i].getPartyId() == obj.getPartyId())
 				{
 					displayCandidateInfo(cs1[i]);
 					std::cout << "\n";
 				}
 			}
+			std::cin.ignore();
+			std::cin.get();
 			break;
 		case 2:
 		{
@@ -2343,20 +2327,20 @@ int main()
 				case 4:
 					// setResultRecord();
 					break;
-					;
 				default:
 					std::cout << "\n   Enter the Correct Choice!";
 					break;
 				}
 			} while (ch != 0);
 		}
+		break;
 		case 7:
 			break;
 		default:
 			std::cout << "\n   Enter the Correct Choice!";
 			break;
 		}
-	} while (ch != 6);
+	} while (ch != 7);
 
 	return 0;
 }
