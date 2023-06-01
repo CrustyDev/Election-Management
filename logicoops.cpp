@@ -185,7 +185,7 @@ class Tideman {
 
 int main(void) {
     int seats;
-    char** partycandidaes;
-    Tideman tideman(seats, partycandidaes);
+    char** partycandidates;
+    Tideman tideman(seats, partycandidates);
     return 0;
 }
