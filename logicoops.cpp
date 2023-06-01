@@ -1,8 +1,6 @@
 #include <iostream>
-#include <string>
+#include <cstring>
 #include <vector>
-
-#define MAX 9
 
 using namespace std;
 
@@ -13,7 +11,7 @@ class Candidate {
             return name; 
         }
     private:
-        std::string name;
+        string name;
 };
 
 class ArrPair {
@@ -34,15 +32,11 @@ class Tideman {
     public:
         Tideman(int argc, char* argv[]) {
             if (argc < 2) {
-                cout << "Usage: tideman [candidate ...]" << endl;
+                cout << "Too few candidates" << endl;
                 exit(1);
             }
 
             candidate_count = argc - 1;
-            if (candidate_count > MAX) {
-                cout << "Maximum number of candidates is " << MAX << endl;
-                exit(2);
-            }
 
             candidates.reserve(candidate_count);
             for (int i = 0; i < candidate_count; i++) {
@@ -61,7 +55,7 @@ class Tideman {
 
                 for (int j = 0; j < candidate_count; j++) {
                     cout << "Rank " << j + 1 << ": ";
-                    std::string name;
+                    string name;
                     cin >> name;
 
                     if (!vote(j, name, ranks)) {
@@ -89,7 +83,7 @@ class Tideman {
         vector<ArrPair> arrpairs;
         int arrpair_count;
 
-        bool vote(int rank, const std::string& name, vector<int>& ranks) {
+        bool vote(int rank, const string& name, vector<int>& ranks) {
             for (int i = 0; i < candidate_count; i++) {
                 if (name == candidates[i].getName()) {
                     ranks[rank] = i;
@@ -184,8 +178,8 @@ class Tideman {
 };
 
 int main(void) {
-    int seats;
-    char** partycandidates;
+    int seats; //stateseats variable in main.cpp
+    char** partycandidates; // obj.GetResultID() in main.cpp
     Tideman tideman(seats, partycandidates);
     return 0;
 }
