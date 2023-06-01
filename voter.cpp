@@ -117,7 +117,6 @@ void Voter::getVoterInfo() {
     std::getline(std::cin >> std::ws, password);
     if (password.length() > 10) {
       std::cout << "Password Length cannot be more than 10." << std::endl;
-      std::cout << "Press Any Key to retry." << std::endl;
     }
   } while (password.length() > 10);
   setPassword(password.c_str());

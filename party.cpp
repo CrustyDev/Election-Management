@@ -46,7 +46,6 @@ void Party::getPartyInfo()
         if (password.length() > 10)
         {
             std::cout << "Password length cannot be more than 10." << std::endl;
-            std::cout << "Press Any key to retry." << std::endl;
         }
     } while (password.length() > 10);
     setPassword(password.c_str());
