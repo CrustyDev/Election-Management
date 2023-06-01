@@ -3,3 +3,4 @@ build_win/
 out/
 .vscode/
 .vs/
+.cache/
