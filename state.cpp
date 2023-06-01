@@ -24,7 +24,8 @@ State::State(const char *sName)
 void State::getStateInfo()
 {
     std::cout << "Enter the Name : ";
-    std::cin.getline(stateName, 24);
+    memset(stateName, 0, sizeof(stateName));
+    std::cin.getline(stateName, sizeof(stateName));
     GetStateIdNo();
     stateId = ++stateIdNo;
     SetStateIdNo();
